@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>末端机房智能诊断 - 共济 AI 暖通能效优化解决方案</title>
+<link rel="icon" href="../images/logo.png">
+<style>
+:root {
+  --bg-deep:#091422;
+  --bg-base:#0E1E35;
+  --bg-panel:#132A48;
+  --bg-card:rgba(20,40,72,.82);
+  --bg-glass:rgba(28,52,90,.56);
+  --border-dim:rgba(100,180,255,.14);
+  --border-glow:rgba(0,212,255,.30);
+  --cyan:#00D4FF;
+  --cyan-dim:rgba(0,212,255,.16);
+  --blue:#1E6FFF;
+  --blue-dim:rgba(30,111,255,.16);
+  --green:#00E68A;
+  --green-dim:rgba(0,230,138,.14);
+  --orange:#FF8C42;
+  --orange-dim:rgba(255,140,66,.15);
+  --red:#FF4D6A;
+  --red-dim:rgba(255,77,106,.15);
+  --yellow:#FFD166;
+  --text-bright:#F4F9FF;
+  --text-main:#D6E6F6;
+  --text-sub:#9BB8D4;
+  --text-dim:#607A96;
+  --font-sans:"PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --font-mono:"SF Mono","Fira Code","Cascadia Code",monospace;
+  --radius:12px;
+  --radius-lg:20px;
+  --shadow-card:0 4px 24px rgba(0,0,0,.36),0 0 1px rgba(0,212,255,.18);
+  --shadow-glow:0 0 36px rgba(0,212,255,.14);
+  --transition:.28s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--text-dim) transparent}
+body{font-family:var(--font-sans);background:var(--bg-deep);color:var(--text-main);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+.grid-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--border-dim) 1px,transparent 1px),linear-gradient(90deg,var(--border-dim) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.75),rgba(0,0,0,.25),transparent);-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.75),rgba(0,0,0,.25),transparent)}
+.container{max-width:1200px;margin:0 auto;padding:0 40px}
+.section{position:relative;padding:108px 0;overflow:hidden}
+.section:nth-of-type(even){background:var(--bg-base)}
+.section-label{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--cyan);margin-bottom:16px}
+.section-label::before{content:"";width:24px;height:2px;border-radius:1px;background:var(--cyan)}
+.section-title{font-size:42px;font-weight:750;color:var(--text-bright);line-height:1.28;margin-bottom:16px;letter-spacing:0}
+.section-title .hl,.hero-title .highlight{background:linear-gradient(90deg,var(--cyan),var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.section-desc{font-size:17px;color:var(--text-sub);max-width:700px;line-height:1.85}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.btn-primary,.btn-outline{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 26px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all var(--transition)}
+.btn-primary{border:0;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--blue))}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,212,255,.28)}
+.btn-outline{border:1px solid var(--border-glow);color:var(--text-bright);background:rgba(6,14,26,.28)}
+.btn-outline:hover{background:var(--bg-glass);border-color:var(--cyan)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(6,14,26,.76);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border-dim)}
+.nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0;color:var(--text-bright);font-size:15px;font-weight:750}
+.nav-logo img{height:26px;width:auto;filter:brightness(1.2) contrast(1.1)}
+.nav-links{display:flex;gap:2px;align-items:center;justify-content:center;list-style:none;flex:1;overflow:hidden}
+.nav-links a{display:block;padding:5px 9px;border-radius:7px;font-size:12.5px;color:var(--text-sub);white-space:nowrap;transition:all var(--transition)}
+.nav-links a:hover,.nav-links a.active{color:var(--text-bright);background:var(--bg-glass)}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-cta{min-height:36px;padding:0 18px;border:0;border-radius:8px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--cyan),var(--blue))}
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:80px}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 46%;opacity:.42;mix-blend-mode:luminosity;filter:brightness(.78) contrast(1.18);mask-image:linear-gradient(to bottom,transparent 0%,black 12%,black 76%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,black 12%,black 76%,transparent 100%)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(9,20,34,.80) 0%,rgba(9,20,34,.48) 45%,rgba(9,20,34,.76) 100%);z-index:1;pointer-events:none}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) 460px;gap:56px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;background:var(--cyan-dim);border:1px solid var(--border-glow);font-size:13px;color:var(--cyan);font-weight:600;margin-bottom:28px}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+.hero-title{font-size:56px;font-weight:800;line-height:1.12;color:var(--text-bright);letter-spacing:0;margin-bottom:22px}
+.hero-subtitle{font-size:19px;color:var(--text-sub);line-height:1.85;max-width:650px;margin-bottom:36px}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:52px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr));gap:20px}
+.hero-stat{padding:16px 18px;border:1px solid var(--border-dim);border-radius:var(--radius);background:rgba(20,40,72,.56)}
+.hero-stat .num{font-size:32px;font-weight:800;line-height:1;font-family:var(--font-mono);color:var(--text-bright);margin-bottom:7px}
+.hero-stat .num .unit{font-size:15px;color:var(--cyan);margin-left:3px}
+.hero-stat .label{font-size:13px;color:var(--text-sub)}
+.report-card{border:1px solid var(--border-glow);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(20,40,72,.86),rgba(10,24,42,.92));box-shadow:var(--shadow-glow);overflow:hidden}
+.report-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border-dim)}
+.report-kicker{font-size:12px;color:var(--cyan);font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.report-time{font-size:12px;color:var(--text-dim);font-family:var(--font-mono)}
+.report-body{padding:22px}
+.score-row{display:grid;grid-template-columns:118px 1fr;gap:18px;align-items:center;margin-bottom:22px}
+.score-ring{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--cyan) 0 75%,rgba(255,255,255,.08) 75% 100%);position:relative}
+.score-ring::after{content:"";position:absolute;inset:10px;border-radius:50%;background:#0B1B30}
+.score-text{position:relative;z-index:1;text-align:center}
+.score-text strong{display:block;font-size:34px;line-height:1;color:var(--text-bright);font-family:var(--font-mono)}
+.score-text span{font-size:12px;color:var(--cyan);font-weight:700}
+.dimension-list{display:grid;gap:8px}
+.dimension{display:grid;grid-template-columns:70px 1fr 36px;gap:10px;align-items:center;font-size:12px;color:var(--text-sub)}
+.dimension-track{height:7px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+.dimension-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--cyan),var(--blue))}
+.issue-list{display:grid;gap:10px}
+.issue-card{border:1px solid rgba(100,180,255,.13);border-left:3px solid var(--orange);border-radius:10px;background:rgba(255,255,255,.03);padding:13px 14px;cursor:pointer;transition:all var(--transition)}
+.issue-card:hover,.issue-card.open{border-color:var(--border-glow);background:rgba(0,212,255,.07)}
+.issue-card.red{border-left-color:var(--red)}
+.issue-title{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;font-weight:750;color:var(--text-bright)}
+.issue-tag{font-size:11px;font-weight:750;padding:1px 7px;border-radius:6px;background:var(--orange-dim);color:var(--orange);white-space:nowrap}
+.issue-card.red .issue-tag{background:var(--red-dim);color:var(--red)}
+.issue-desc{font-size:12px;color:var(--text-sub);margin-top:6px;line-height:1.65}
+.issue-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(100,180,255,.12);font-size:12px;color:var(--text-sub)}
+.issue-card.open .issue-detail{display:block}
+.pain-grid,.value-grid,.faq-list{margin-top:44px}
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.pain-card,.value-card,.deploy-card,.engine-card,.flow-step,.capability-card,.faq-item,.scenario-card{background:var(--bg-card);border:1px solid var(--border-dim);border-radius:var(--radius-lg);box-shadow:var(--shadow-card)}
+.pain-card{padding:30px;transition:all var(--transition)}
+.pain-card:hover{transform:translateY(-4px);border-color:var(--border-glow);box-shadow:var(--shadow-glow)}
+.pain-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;margin-bottom:18px;color:var(--cyan);background:var(--cyan-dim)}
+.pain-card:nth-child(2) .pain-icon{color:var(--orange);background:var(--orange-dim)}
+.pain-card:nth-child(3) .pain-icon{color:var(--red);background:var(--red-dim)}
+.pain-card h3{font-size:20px;color:var(--text-bright);margin-bottom:10px}
+.pain-card p{font-size:15px;color:var(--text-sub)}
+.pain-card .pain-result{margin-top:20px;padding-top:16px;border-top:1px solid var(--border-dim);font-size:13px;color:var(--cyan);font-weight:750}
+.compare-strip{margin-top:34px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px}
+.compare-box{padding:24px;border:1px solid var(--border-dim);border-radius:var(--radius-lg);background:rgba(20,40,72,.58)}
+.compare-box strong{display:block;color:var(--text-bright);font-size:18px;margin-bottom:8px}
+.compare-box span{font-size:14px;color:var(--text-sub)}
+.compare-arrow{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--blue));font-weight:800;color:#fff}
+.flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:46px}
+.flow-step{padding:26px 22px;position:relative;overflow:hidden}
+.flow-step::before{content:attr(data-step);display:block;font-family:var(--font-mono);font-size:13px;color:var(--cyan);font-weight:800;margin-bottom:12px}
+.flow-step h3{font-size:18px;color:var(--text-bright);margin-bottom:8px}
+.flow-step p{font-size:14px;color:var(--text-sub)}
+.capability-layout{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px;margin-top:46px}
+.capability-list{display:grid;gap:12px}
+.capability-card{padding:20px;cursor:pointer;transition:all var(--transition)}
+.capability-card.active,.capability-card:hover{border-color:var(--cyan);background:rgba(0,212,255,.07)}
+.capability-card h3{font-size:17px;color:var(--text-bright);margin-bottom:7px}
+.capability-card p{font-size:13px;color:var(--text-sub)}
+.sample-panel{border:1px solid var(--border-glow);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(20,40,72,.82),rgba(10,24,42,.88));padding:28px;box-shadow:var(--shadow-glow);min-height:360px}
+.sample-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.pill{display:inline-flex;align-items:center;min-height:24px;padding:0 9px;border-radius:7px;font-size:12px;font-weight:750;background:var(--blue-dim);color:var(--cyan)}
+.pill.warn{background:var(--orange-dim);color:var(--orange)}
+.pill.red{background:var(--red-dim);color:var(--red)}
+.sample-panel h3{font-size:24px;color:var(--text-bright);margin-bottom:10px}
+.sample-panel p{font-size:15px;color:var(--text-sub);line-height:1.8}
+.evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.evidence{padding:14px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(100,180,255,.10)}
+.evidence strong{display:block;font-size:18px;color:var(--text-bright);font-family:var(--font-mono)}
+.evidence span{font-size:12px;color:var(--text-dim)}
+.sample-actions{display:grid;gap:9px;margin-top:18px}
+.sample-action{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--text-main)}
+.sample-action::before{content:"";width:7px;height:7px;margin-top:10px;border-radius:50%;background:var(--green);flex-shrink:0}
+.report-showcase{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:28px;align-items:start;margin-top:46px}
+.screen-shell{border:1px solid var(--border-glow);border-radius:var(--radius-lg);background:#0B1B30;box-shadow:var(--shadow-glow);overflow:hidden}
+.screen-top{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border-dim);background:rgba(255,255,255,.03)}
+.screen-title{font-size:13px;color:var(--text-bright);font-weight:750}
+.screen-dots{display:flex;gap:6px}
+.screen-dots span{width:8px;height:8px;border-radius:50%;background:var(--text-dim)}
+.screen-body{padding:18px;display:grid;gap:14px}
+.screen-summary{display:grid;grid-template-columns:130px 1fr;gap:14px}
+.mini-score{padding:16px;border-radius:12px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.22);text-align:center}
+.mini-score strong{font-size:34px;color:var(--text-bright);line-height:1;font-family:var(--font-mono)}
+.mini-score span{display:block;font-size:12px;color:var(--cyan);margin-top:6px}
+.mini-bars{display:grid;gap:8px}
+.mini-bar{display:grid;grid-template-columns:78px 1fr 36px;gap:9px;align-items:center;font-size:11px;color:var(--text-sub)}
+.mini-bar div{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.mini-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));border-radius:3px}
+.mini-map{height:170px;border-radius:12px;border:1px solid rgba(100,180,255,.12);background:linear-gradient(90deg,rgba(0,212,255,.04) 0 1px,transparent 1px),linear-gradient(rgba(0,212,255,.04) 0 1px,transparent 1px);background-size:40px 34px;position:relative;overflow:hidden}
+.map-zone{position:absolute;border-radius:8px;border:1px solid rgba(100,180,255,.18);background:rgba(255,255,255,.04)}
+.map-zone.hot{border-color:var(--red);background:var(--red-dim)}
+.map-zone.warn{border-color:var(--orange);background:var(--orange-dim)}
+.map-pin{position:absolute;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;background:var(--red);box-shadow:0 0 20px rgba(255,77,106,.35)}
+.map-pin.warn{background:var(--orange)}
+.mini-card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.mini-dx-card{padding:12px;border-left:3px solid var(--orange);border-radius:10px;background:rgba(255,255,255,.04);font-size:12px;color:var(--text-sub)}
+.mini-dx-card.red{border-left-color:var(--red)}
+.mini-dx-card strong{display:block;color:var(--text-bright);font-size:13px;margin-bottom:5px}
+.report-copy{display:grid;gap:14px}
+.report-copy-card{padding:22px;border:1px solid var(--border-dim);border-radius:var(--radius-lg);background:var(--bg-card)}
+.report-copy-card h3{font-size:18px;color:var(--text-bright);margin-bottom:8px}
+.report-copy-card p{font-size:14px;color:var(--text-sub)}
+.sim-layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:26px;margin-top:46px}
+.scenario-list{display:grid;gap:12px}
+.scenario-card{padding:18px;cursor:pointer;transition:all var(--transition)}
+.scenario-card.active,.scenario-card:hover{border-color:var(--cyan);background:rgba(0,212,255,.07)}
+.scenario-card .scenario-tag{display:inline-flex;min-height:22px;align-items:center;padding:0 8px;border-radius:7px;font-size:11px;font-weight:800;color:var(--cyan);background:var(--cyan-dim);margin-bottom:10px}
+.scenario-card h3{font-size:16px;color:var(--text-bright);margin-bottom:7px}
+.scenario-card p{font-size:13px;color:var(--text-sub);line-height:1.65}
+.sim-console{border:1px solid var(--border-glow);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(20,40,72,.82),rgba(10,24,42,.92));box-shadow:var(--shadow-glow);overflow:hidden}
+.sim-console-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid var(--border-dim)}
+.sim-console-title{font-size:14px;font-weight:800;color:var(--text-bright)}
+.sim-status{font-size:12px;color:var(--cyan);font-family:var(--font-mono)}
+.sim-console-body{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;padding:20px}
+.sim-room{min-height:410px;border:1px solid rgba(100,180,255,.12);border-radius:16px;background:linear-gradient(90deg,rgba(0,212,255,.04) 0 1px,transparent 1px),linear-gradient(rgba(0,212,255,.04) 0 1px,transparent 1px),rgba(6,14,26,.35);background-size:44px 44px;position:relative;overflow:hidden;padding:18px}
+.sim-room-grid{height:100%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:18px}
+.sim-zone{position:relative;border:1px solid rgba(100,180,255,.16);border-radius:14px;background:rgba(255,255,255,.035);padding:14px;transition:all var(--transition);overflow:hidden}
+.sim-zone::after{content:attr(data-label);position:absolute;left:14px;top:11px;font-size:12px;color:var(--text-dim);font-weight:800;font-family:var(--font-mono)}
+.sim-zone.active-warn{border-color:var(--orange);background:rgba(255,140,66,.12);box-shadow:0 0 28px rgba(255,140,66,.12)}
+.sim-zone.active-red{border-color:var(--red);background:rgba(255,77,106,.13);box-shadow:0 0 32px rgba(255,77,106,.16)}
+.rack-row{position:absolute;left:14px;right:14px;bottom:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.rack{height:58px;border-radius:6px;background:rgba(6,14,26,.7);border:1px solid rgba(100,180,255,.16)}
+.sim-zone.active-warn .rack:nth-child(2),.sim-zone.active-red .rack:nth-child(2){background:rgba(255,255,255,.08)}
+.sim-pin{position:absolute;right:14px;top:14px;min-width:28px;height:28px;border-radius:50%;display:none;place-items:center;font-size:12px;font-weight:900;color:#fff;background:var(--orange);box-shadow:0 0 18px rgba(255,140,66,.35)}
+.sim-zone.active-warn .sim-pin,.sim-zone.active-red .sim-pin{display:grid}
+.sim-zone.active-red .sim-pin{background:var(--red);box-shadow:0 0 20px rgba(255,77,106,.42)}
+.sim-airflow{position:absolute;left:20px;right:20px;top:50%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.22}
+.sim-report{display:flex;flex-direction:column;gap:14px}
+.sim-score-line{display:grid;grid-template-columns:88px 1fr;gap:14px;align-items:center;padding:14px;border:1px solid rgba(100,180,255,.12);border-radius:14px;background:rgba(255,255,255,.04)}
+.sim-score{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--cyan) 0 75%,rgba(255,255,255,.08) 75% 100%);position:relative}
+.sim-score::after{content:"";position:absolute;inset:7px;border-radius:50%;background:#0B1B30}
+.sim-score strong{position:relative;z-index:1;font-size:25px;color:var(--text-bright);font-family:var(--font-mono)}
+.sim-score-copy h3{font-size:16px;color:var(--text-bright);margin-bottom:4px}
+.sim-score-copy p{font-size:12px;color:var(--text-sub);line-height:1.6}
+.sim-run-btn{min-height:44px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#fff;font-size:14px;font-weight:800;cursor:pointer;transition:all var(--transition)}
+.sim-run-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,212,255,.22)}
+.sim-run-btn:disabled{opacity:.7;cursor:not-allowed;transform:none}
+.sim-result-card{padding:16px;border-left:3px solid var(--orange);border-radius:12px;background:rgba(255,255,255,.04);border-top:1px solid rgba(100,180,255,.10);border-right:1px solid rgba(100,180,255,.10);border-bottom:1px solid rgba(100,180,255,.10)}
+.sim-result-card.red{border-left-color:var(--red)}
+.sim-result-card h3{font-size:17px;color:var(--text-bright);margin-bottom:8px}
+.sim-result-card p{font-size:13px;color:var(--text-sub);line-height:1.65}
+.sim-evidence,.sim-advice{display:grid;gap:8px}
+.sim-evidence h4,.sim-advice h4{font-size:13px;color:var(--cyan);margin-top:2px}
+.sim-evidence-item,.sim-advice-item{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.04);font-size:12px;color:var(--text-sub);line-height:1.55}
+.sensor-layout,.engine-layout,.deploy-grid,.value-grid{display:grid;gap:22px;margin-top:46px}
+.sensor-layout{grid-template-columns:1fr 380px}
+.level-stack{display:grid;gap:16px}
+.level-card{display:grid;grid-template-columns:92px 1fr;gap:18px;align-items:center;padding:22px;border:1px solid var(--border-dim);border-radius:var(--radius-lg);background:var(--bg-card)}
+.level-index{height:54px;border-radius:14px;display:grid;place-items:center;font-size:18px;color:var(--cyan);font-weight:800;font-family:var(--font-mono);background:var(--cyan-dim)}
+.level-card h3{font-size:18px;color:var(--text-bright);margin-bottom:5px}
+.level-card p{font-size:14px;color:var(--text-sub)}
+.sensor-card{padding:26px;border:1px solid var(--border-glow);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(20,40,72,.80),rgba(10,24,42,.90));box-shadow:var(--shadow-glow)}
+.sensor-card h3{font-size:20px;color:var(--text-bright);margin-bottom:14px}
+.sensor-card .sensor-line{padding:12px 0;border-bottom:1px solid rgba(100,180,255,.10);font-size:14px;color:var(--text-sub)}
+.sensor-card .sensor-line:last-child{border-bottom:0}
+.sensor-line strong{color:var(--text-bright)}
+.engine-layout{grid-template-columns:repeat(2,1fr)}
+.engine-card{padding:30px}
+.engine-card h3{font-size:24px;color:var(--text-bright);margin-bottom:12px}
+.engine-card p{font-size:15px;color:var(--text-sub);line-height:1.85}
+.rule-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.rule-tags span{font-family:var(--font-mono);font-size:12px;padding:5px 9px;border-radius:7px;background:rgba(255,255,255,.05);color:var(--text-sub);border:1px solid rgba(100,180,255,.10)}
+.deploy-grid{grid-template-columns:repeat(3,1fr)}
+.deploy-card{padding:26px}
+.deploy-card h3{font-size:19px;color:var(--text-bright);margin-bottom:10px}
+.deploy-card p{font-size:14px;color:var(--text-sub)}
+.deploy-note{margin-top:34px;padding:22px 24px;border-radius:var(--radius-lg);border:1px solid var(--orange-dim);background:rgba(255,140,66,.07);color:var(--text-sub);font-size:14px}
+.value-grid{grid-template-columns:repeat(4,1fr)}
+.value-card{padding:26px;min-height:190px}
+.value-card h3{font-size:19px;color:var(--text-bright);margin-bottom:10px}
+.value-card p{font-size:14px;color:var(--text-sub)}
+.relation-box{margin-top:34px;padding:28px;border:1px solid var(--border-glow);border-radius:var(--radius-lg);background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(30,111,255,.05));display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.relation-box h3{color:var(--text-bright);font-size:20px;margin-bottom:8px}
+.relation-box p{font-size:14px;color:var(--text-sub)}
+.faq-list{display:grid;gap:12px;width:100%}
+.faq-item{overflow:hidden}
+.faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;cursor:pointer}
+.faq-q strong{font-size:16px;color:var(--text-bright)}
+.faq-arrow{color:var(--cyan);transition:transform var(--transition)}
+.faq-item.active .faq-arrow{transform:rotate(180deg)}
+.faq-a{display:none;padding:0 22px 22px;color:var(--text-sub);font-size:14px;line-height:1.8}
+.faq-item.active .faq-a{display:block}
+.cta-band{margin-top:46px;padding:34px;border:1px solid var(--border-glow);border-radius:var(--radius-lg);background:linear-gradient(135deg,rgba(0,212,255,.10),rgba(30,111,255,.08));display:flex;align-items:center;justify-content:space-between;gap:22px}
+.cta-band h3{font-size:24px;color:var(--text-bright);margin-bottom:6px}
+.cta-band p{font-size:15px;color:var(--text-sub)}
+.cta-actions{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0}
+.footer{padding:30px 0;color:var(--text-dim);font-size:13px;border-top:1px solid var(--border-dim);background:#06101D}
+@media (max-width:1100px){
+  .hero-grid,.report-showcase,.sensor-layout,.sim-layout,.sim-console-body{grid-template-columns:1fr}
+  .hero-title{font-size:48px}
+  .capability-layout{grid-template-columns:1fr}
+  .nav-links{display:none}
+}
+@media (max-width:860px){
+  .container{padding:0 22px}
+  .section{padding:82px 0}
+  .section-title{font-size:32px}
+  .hero-title{font-size:38px}
+  .hero-stats,.pain-grid,.flow-grid,.deploy-grid,.value-grid,.engine-layout{grid-template-columns:1fr}
+  .compare-strip{grid-template-columns:1fr}
+  .compare-arrow{transform:rotate(90deg);margin:0 auto}
+  .evidence-grid,.mini-card-grid,.relation-box{grid-template-columns:1fr}
+  .sim-room{min-height:520px}
+  .sim-room-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,120px)}
+  .cta-band{align-items:flex-start;flex-direction:column}
+  .nav{padding:0 18px}
+  .nav-cta{display:none}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="#hero">
+    <img src="../images/logo.png" alt="共济科技">
+    <span>末端机房智能诊断</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#hero" class="active">首页</a></li>
+    <li><a href="#why">诊断价值</a></li>
+    <li><a href="#overview">产品总览</a></li>
+    <li><a href="#sensor">数据质量</a></li>
+    <li><a href="#capabilities">诊断能力</a></li>
+    <li><a href="#report">诊断日报</a></li>
+    <li><a href="#simulator">互动演示</a></li>
+    <li><a href="#engine">诊断引擎</a></li>
+    <li><a href="#deploy">部署条件</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-cta" onclick="window.open('../index.html','_self')">返回解决方案</button>
+  </div>
+</nav>
+
+<section class="hero section" id="hero">
+  <img class="hero-bg" src="../images/hero-数据中心走廊实拍.png" alt="">
+  <div class="container hero-grid">
+    <div>
+      <div class="hero-badge reveal"><span class="dot"></span>末端机房健康诊断能力</div>
+      <h1 class="hero-title reveal">每日一份报告<br><span class="highlight">精确到位置</span><br><span class="highlight">落实到动作</span></h1>
+      <p class="hero-subtitle reveal">基于已有 AI 寻优采集链路与热力模型配置，自动识别 IT 负载不均、气流组织缺陷和空调性能退化，让运维从温度报警后排查升级为提前发现根因并按建议处置。</p>
+      <div class="hero-actions reveal">
+        <a class="btn-primary" href="#sensor">先看数据质量</a>
+        <a class="btn-outline" href="#simulator">体验互动诊断</a>
+      </div>
+      <div class="hero-stats reveal">
+        <div class="hero-stat"><div class="num"><span class="counter" data-target="1">0</span><span class="unit">日</span></div><div class="label">每日自动报告</div></div>
+        <div class="hero-stat"><div class="num"><span class="counter" data-target="3">0</span><span class="unit">类</span></div><div class="label">核心诊断模块</div></div>
+        <div class="hero-stat"><div class="num"><span class="counter" data-target="2">0</span><span class="unit">层</span></div><div class="label">诊断引擎架构</div></div>
+        <div class="hero-stat"><div class="num"><span class="counter" data-target="3">0</span><span class="unit">级</span></div><div class="label">传感器健康校验</div></div>
+      </div>
+    </div>
+
+    <div class="report-card reveal">
+      <div class="report-head">
+        <div class="report-kicker">Daily Diagnosis Report</div>
+        <div class="report-time">06:00</div>
+      </div>
+      <div class="report-body">
+        <div class="score-row">
+          <div class="score-ring">
+            <div class="score-text"><strong>75</strong><span>良</span></div>
+          </div>
+          <div class="dimension-list">
+            <div class="dimension"><span>IT 负载</span><div class="dimension-track"><div class="dimension-fill" style="width:85%"></div></div><span>85</span></div>
+            <div class="dimension"><span>气流组织</span><div class="dimension-track"><div class="dimension-fill" style="width:62%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div><span>62</span></div>
+            <div class="dimension"><span>空调性能</span><div class="dimension-track"><div class="dimension-fill" style="width:70%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div><span>70</span></div>
+            <div class="dimension"><span>传感器</span><div class="dimension-track"><div class="dimension-fill" style="width:100%;background:var(--green)"></div></div><span>100</span></div>
+          </div>
+        </div>
+        <div class="issue-list">
+          <div class="issue-card red open">
+            <div class="issue-title"><span>AC-07 制冷性能下降</span><span class="issue-tag">红色</span></div>
+            <div class="issue-desc">近 3 天较 30 天基线下降 18%，同档位横向对比低于同组均值。</div>
+            <div class="issue-detail">建议在 48 小时内检查风机叶片、传动皮带与过滤网，并在检修后对比次日报告。</div>
+          </div>
+          <div class="issue-card">
+            <div class="issue-title"><span>G-H 列冷通道热风侵入</span><span class="issue-tag">黄色</span></div>
+            <div class="issue-desc">温度偏移量 4.2℃，区域换热效率比低于机房平均值。</div>
+            <div class="issue-detail">建议检查该位置附近盲板、端部门帘和线缆开孔密封情况。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="why">
+  <div class="container">
+    <div class="section-label reveal">Why Diagnosis</div>
+    <h2 class="section-title reveal">有些问题<br><span class="hl">靠调空调参数解决不了</span></h2>
+    <p class="section-desc reveal">AI 寻优默认基础设施处于健康状态。当机柜功率分布、通道密封或空调自身性能出现问题时，寻优会被迫把冷量倾斜到局部区域，节能空间被持续压缩。</p>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <div class="pain-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="15" width="18" height="5" rx="2"/><path d="M7 8h.01M7 18h.01M12 8h5"/></svg></div>
+        <h3>IT 负载分布不均</h3>
+        <p>某些区域机柜功率密度过高，周围空调满负荷仍压不住温度。</p>
+        <div class="pain-result">根因在上架布局</div>
+      </div>
+      <div class="pain-card reveal">
+        <div class="pain-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h11a3 3 0 1 0-3-3M3 6h6M3 18h14a3 3 0 1 0-3-3"/></svg></div>
+        <h3>气流组织缺陷</h3>
+        <p>盲板缺失、端部密封不严、地板开孔异常，导致冷热空气掺混。</p>
+        <div class="pain-result">根因在通道结构</div>
+      </div>
+      <div class="pain-card reveal">
+        <div class="pain-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M5 7l7 5 7-5M5 17l7-5 7 5M2 12h20"/></svg></div>
+        <h3>空调性能退化</h3>
+        <p>散热器积灰、风机磨损、管路堵塞导致同转速下冷量下降。</p>
+        <div class="pain-result">根因在设备维护</div>
+      </div>
+    </div>
+    <div class="compare-strip reveal">
+      <div class="compare-box"><strong>AI 寻优</strong><span>解决“怎么调最优”：台数、转速、设定温度和安全边界。</span></div>
+      <div class="compare-arrow">+</div>
+      <div class="compare-box"><strong>智能诊断</strong><span>解决“为什么调不动”：定位基础设施缺陷并给出处置动作。</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="container">
+    <div class="section-label reveal">Product Overview</div>
+    <h2 class="section-title reveal">从已有数据到行动日报<br><span class="hl">形成每日闭环</span></h2>
+    <p class="section-desc reveal">智能诊断独立于寻优流程运行，但复用寻优已有的数据采集、热力模型和通道配置。报告输出给运维团队，直接指向位置、证据和现场动作。</p>
+    <div class="flow-grid">
+      <div class="flow-step reveal" data-step="01"><h3>复用已有采集</h3><p>温度、空调运行、热力模型和通道分组配置无需重复搭建。</p></div>
+      <div class="flow-step reveal" data-step="02"><h3>数据健康校验</h3><p>先识别超范围、写死和疑似漂移，防止异常数据误导结论。</p></div>
+      <div class="flow-step reveal" data-step="03"><h3>双层诊断引擎</h3><p>物理规则上线即生效，统计基线积累后发现渐进变化。</p></div>
+      <div class="flow-step reveal" data-step="04"><h3>每日诊断报告</h3><p>健康度、问题卡片、证据链、处置建议和 30 天趋势统一输出。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="sensor">
+  <div class="container">
+    <div class="section-label reveal">Sensor Health</div>
+    <h2 class="section-title reveal">诊断结果可信<br><span class="hl">先要保证数据可信</span></h2>
+    <p class="section-desc reveal">诊断阈值和传感器常见故障量级高度重叠。系统在诊断前先做三级健康校验，避免用错误数据生成错误结论。只有先确认底层数据可用，后面的热密度、气流组织和空调性能诊断才有可信基础。</p>
+    <div class="sensor-layout">
+      <div class="level-stack reveal">
+        <div class="level-card"><div class="level-index">L1</div><div><h3>单点静态校验</h3><p>识别超范围、缺失、非数值和冷热方向异常，每条数据实时处理。</p></div></div>
+        <div class="level-card"><div class="level-index">L2</div><div><h3>单点时序校验</h3><p>每小时识别读数长时间不变化的写死传感器，并从 HVAC 诊断中剔除。</p></div></div>
+        <div class="level-card"><div class="level-index">L3</div><div><h3>空间一致性校验</h3><p>每日通过邻居交叉验证识别疑似漂移，独立输出传感器健康卡片。</p></div></div>
+      </div>
+      <div class="sensor-card reveal">
+        <h3>传感器健康卡片</h3>
+        <div class="sensor-line"><strong>异常类型：</strong>疑似漂移</div>
+        <div class="sensor-line"><strong>判定依据：</strong>连续 3 天与邻居偏差超过 2℃</div>
+        <div class="sensor-line"><strong>影响范围：</strong>该点位仍参与诊断，但结论需结合现场复核</div>
+        <div class="sensor-line"><strong>升级机制：</strong>连续 7 天同类异常升级为红色</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="capabilities">
+  <div class="container">
+    <div class="section-label reveal">Diagnosis Capabilities</div>
+    <h2 class="section-title reveal">三大诊断能力<br><span class="hl">把问题定位到现场动作</span></h2>
+    <p class="section-desc reveal">每类诊断都不是只给出异常分数，而是输出位置、证据和建议，帮助现场团队明确去哪看、看什么、修完后如何验证。</p>
+    <div class="capability-layout reveal">
+      <div class="capability-list">
+        <div class="capability-card active" data-capability="load"><h3>IT 负载不均检测</h3><p>识别高热密度区域、持续性高温区域和新上架热密度阶跃。</p></div>
+        <div class="capability-card" data-capability="airflow"><h3>气流组织缺陷检测</h3><p>定位热风侵入、冷风旁通、局部短路和换热效率偏低。</p></div>
+        <div class="capability-card" data-capability="ac"><h3>空调性能退化检测</h3><p>通过同工况横向对比与 30 天基线发现制冷能力下降。</p></div>
+      </div>
+      <div class="sample-panel" id="samplePanel">
+        <div class="sample-meta"><span class="pill warn" id="sampleSeverity">黄色预警</span><span class="pill" id="sampleModule">IT 负载</span></div>
+        <h3 id="sampleTitle">G-H 列冷通道热密度异常</h3>
+        <p id="sampleDesc">该区域热密度是机房均值的 1.8 倍，最热点位距离温度上限仅 1.8℃，关联空调已接近高负荷运行。</p>
+        <div class="evidence-grid" id="sampleEvidence">
+          <div class="evidence"><strong>1.8x</strong><span>区域热密度倍数</span></div>
+          <div class="evidence"><strong>26.2℃</strong><span>最热点位均温</span></div>
+          <div class="evidence"><strong>85%</strong><span>关联风机转速</span></div>
+        </div>
+        <div class="sample-actions" id="sampleActions">
+          <div class="sample-action">将该区域功耗最高的 3 台机柜迁移至温度裕度充足区域。</div>
+          <div class="sample-action">若无法迁移机柜，在该区域增设行级空调或补充局部冷量。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="report">
+  <div class="container">
+    <div class="section-label reveal">Daily Report</div>
+    <h2 class="section-title reveal">诊断日报不是告警列表<br><span class="hl">而是运维行动清单</span></h2>
+    <p class="section-desc reveal">日报结构参考现有机房诊断原型，重点展示健康度、问题定位、证据链、建议动作和 30 天趋势，让现场处理有优先级、有依据、有反馈。</p>
+    <div class="report-showcase">
+      <div class="screen-shell reveal">
+        <div class="screen-top">
+          <div class="screen-title">机房智能诊断日报</div>
+          <div class="screen-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div class="screen-body">
+          <div class="screen-summary">
+            <div class="mini-score"><strong>75</strong><span>健康度 · 良</span></div>
+            <div class="mini-bars">
+              <div class="mini-bar"><span>IT 负载</span><div><i style="width:85%"></i></div><span>85</span></div>
+              <div class="mini-bar"><span>气流组织</span><div><i style="width:62%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></i></div><span>62</span></div>
+              <div class="mini-bar"><span>空调性能</span><div><i style="width:70%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></i></div><span>70</span></div>
+              <div class="mini-bar"><span>传感器</span><div><i style="width:100%;background:var(--green)"></i></div><span>100</span></div>
+            </div>
+          </div>
+          <div class="mini-map">
+            <div class="map-zone" style="left:7%;top:16%;width:18%;height:28%"></div>
+            <div class="map-zone warn" style="left:32%;top:18%;width:22%;height:30%"></div>
+            <div class="map-zone hot" style="left:60%;top:18%;width:27%;height:30%"></div>
+            <div class="map-zone" style="left:10%;top:60%;width:22%;height:24%"></div>
+            <div class="map-zone warn" style="left:43%;top:60%;width:19%;height:24%"></div>
+            <div class="map-pin" style="left:72%;top:29%">1</div>
+            <div class="map-pin warn" style="left:44%;top:27%">2</div>
+          </div>
+          <div class="mini-card-grid">
+            <div class="mini-dx-card red"><strong>AC-07 制冷性能下降</strong>近 3 天较基线下降 18%，建议 48 小时内检修。</div>
+            <div class="mini-dx-card"><strong>G-H 列热风侵入</strong>温度偏移 4.2℃，建议检查盲板与门帘。</div>
+            <div class="mini-dx-card"><strong>E-F 列旁通气流</strong>换热效率比 0.58，建议巡检密封完整性。</div>
+            <div class="mini-dx-card"><strong>传感器健康正常</strong>48 个温度传感器未检测到写死、超范围或漂移。</div>
+          </div>
+        </div>
+      </div>
+      <div class="report-copy reveal">
+        <div class="report-copy-card"><h3>执行摘要</h3><p>健康度总分和四维分项得分，支持管理者一眼判断今天是否需要关注。</p></div>
+        <div class="report-copy-card"><h3>问题卡片</h3><p>每条问题都包含位置、诊断结论、证据数据、建议动作和持续时间。</p></div>
+        <div class="report-copy-card"><h3>趋势看板</h3><p>展示 30 天健康度、空调性能、区域热密度和气流质量变化。</p></div>
+        <a class="btn-primary" href="#simulator">进入互动诊断演示</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="simulator">
+  <div class="container">
+    <div class="section-label reveal">Interactive Diagnosis</div>
+    <h2 class="section-title reveal">选择一个现场场景<br><span class="hl">模拟生成诊断报告</span></h2>
+    <p class="section-desc reveal">这里把产品原型里的核心交互直接放到演示网站中：选择真实现场问题，运行诊断后查看定位图高亮、健康度变化、证据链和建议动作。</p>
+    <div class="sim-layout reveal">
+      <div class="scenario-list">
+        <div class="scenario-card active" data-sim-scenario="airflow">
+          <span class="scenario-tag">气流组织</span>
+          <h3>盲板缺失导致热风侵入</h3>
+          <p>冷通道局部温度抬升，换热效率比下降，寻优继续降温也难以解决根因。</p>
+        </div>
+        <div class="scenario-card" data-sim-scenario="load">
+          <span class="scenario-tag">IT 负载</span>
+          <h3>新上架后 G-H 列持续高温</h3>
+          <p>区域热密度显著高于全房均值，关联空调已经接近高负荷运行。</p>
+        </div>
+        <div class="scenario-card" data-sim-scenario="ac">
+          <span class="scenario-tag">空调性能</span>
+          <h3>AC-07 制冷性能退化</h3>
+          <p>同一风机转速档位下，估算制冷量持续低于自身基线和同组均值。</p>
+        </div>
+        <div class="scenario-card" data-sim-scenario="sensor">
+          <span class="scenario-tag">传感器健康</span>
+          <h3>TC-C04 疑似漂移</h3>
+          <p>读数与邻近点位连续偏差，诊断前先标注数据可信度风险。</p>
+        </div>
+      </div>
+
+      <div class="sim-console">
+        <div class="sim-console-head">
+          <div class="sim-console-title">机房诊断模拟台</div>
+          <div class="sim-status" id="simStatus">SCENARIO READY</div>
+        </div>
+        <div class="sim-console-body">
+          <div class="sim-room">
+            <div class="sim-airflow"></div>
+            <div class="sim-room-grid">
+              <div class="sim-zone" data-zone="ab" data-label="A-B"><div class="sim-pin">1</div><div class="rack-row"><div class="rack"></div><div class="rack"></div><div class="rack"></div><div class="rack"></div></div></div>
+              <div class="sim-zone" data-zone="cd" data-label="C-D"><div class="sim-pin">1</div><div class="rack-row"><div class="rack"></div><div class="rack"></div><div class="rack"></div><div class="rack"></div></div></div>
+              <div class="sim-zone" data-zone="ef" data-label="E-F"><div class="sim-pin">1</div><div class="rack-row"><div class="rack"></div><div class="rack"></div><div class="rack"></div><div class="rack"></div></div></div>
+              <div class="sim-zone" data-zone="gh" data-label="G-H"><div class="sim-pin">1</div><div class="rack-row"><div class="rack"></div><div class="rack"></div><div class="rack"></div><div class="rack"></div></div></div>
+              <div class="sim-zone" data-zone="ac05" data-label="AC-05"><div class="sim-pin">1</div><div class="rack-row"><div class="rack"></div><div class="rack"></div><div class="rack"></div><div class="rack"></div></div></div>
+              <div class="sim-zone" data-zone="ac07" data-label="AC-07"><div class="sim-pin">1</div><div class="rack-row"><div class="rack"></div><div class="rack"></div><div class="rack"></div><div class="rack"></div></div></div>
+              <div class="sim-zone" data-zone="tc04" data-label="TC-C04"><div class="sim-pin">1</div><div class="rack-row"><div class="rack"></div><div class="rack"></div><div class="rack"></div><div class="rack"></div></div></div>
+              <div class="sim-zone" data-zone="spare" data-label="SPARE"><div class="sim-pin">1</div><div class="rack-row"><div class="rack"></div><div class="rack"></div><div class="rack"></div><div class="rack"></div></div></div>
+            </div>
+          </div>
+          <div class="sim-report">
+            <div class="sim-score-line">
+              <div class="sim-score"><strong id="simScore">--</strong></div>
+              <div class="sim-score-copy">
+                <h3 id="simScoreTitle">等待运行诊断</h3>
+                <p id="simScoreDesc">选择左侧场景后点击运行，系统将模拟生成健康度、问题定位和建议动作。</p>
+              </div>
+            </div>
+            <button class="sim-run-btn" id="simRunBtn">运行诊断</button>
+            <div class="sim-result-card" id="simResultCard">
+              <h3 id="simResultTitle">尚未生成诊断结果</h3>
+              <p id="simResultDesc">诊断完成后，这里会展示问题位置、根因判断和运维可执行的处置建议。</p>
+            </div>
+            <div class="sim-evidence">
+              <h4>证据链</h4>
+              <div id="simEvidenceList"></div>
+            </div>
+            <div class="sim-advice">
+              <h4>建议动作</h4>
+              <div id="simAdviceList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="engine">
+  <div class="container">
+    <div class="section-label reveal">Diagnosis Engine</div>
+    <h2 class="section-title reveal">物理规则 + 统计基线<br><span class="hl">上线即用，越用越准</span></h2>
+    <p class="section-desc reveal">物理规则负责确定性异常，统计基线负责渐进式变化。两个引擎合并去重后，按严重度排序进入每日诊断报告。</p>
+    <div class="engine-layout">
+      <div class="engine-card reveal">
+        <h3>物理规则引擎</h3>
+        <p>基于热力学因果关系，上线即生效。每条规则直接产出问题类型、严重程度、定位和证据链。</p>
+        <div class="rule-tags"><span>R1-1</span><span>R1-2</span><span>R2-1</span><span>R2-2</span><span>R2-3</span><span>R3-1</span><span>R3-2</span></div>
+      </div>
+      <div class="engine-card reveal">
+        <h3>统计基线引擎</h3>
+        <p>为设备和传感器建立工况匹配的滚动基线，专门捕捉日常巡检不易察觉的持续恶化。</p>
+        <div class="rule-tags"><span>R1-B1a</span><span>R1-B1b</span><span>R2-B1a</span><span>R2-B1b</span><span>R3-B1</span><span>30D Baseline</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="deploy">
+  <div class="container">
+    <div class="section-label reveal">Deployment</div>
+    <h2 class="section-title reveal">复用寻优链路<br><span class="hl">按数据条件渐进增强</span></h2>
+    <p class="section-desc reveal">已部署 AI 寻优的机房通常无需新增传感器即可启用诊断。额外采集数据用于增强定位精度，而不是作为基础门槛。</p>
+    <div class="deploy-grid">
+      <div class="deploy-card reveal"><h3>基础采集</h3><p>温度 + 风机转速即可支撑三大模块的基础诊断，适合大多数已接入机房。</p></div>
+      <div class="deploy-card reveal"><h3>IT 功率增强</h3><p>增加机柜级或 PDU 级功率后，IT 负载不均可进一步定位到高功耗机柜。</p></div>
+      <div class="deploy-card reveal"><h3>水侧数据增强</h3><p>增加冷冻水温度与水阀开度后，可进一步区分空调风侧和水侧问题。</p></div>
+    </div>
+    <div class="deploy-note reveal">适用说明：首版优先支持封闭冷通道和封闭热通道；无封闭通道机房建议先做热力模型、通道配置和传感器覆盖评估。统计基线需要 2-4 周数据积累，冷启动期以物理规则为主。</div>
+  </div>
+</section>
+
+<section class="section" id="value">
+  <div class="container">
+    <div class="section-label reveal">Customer Value</div>
+    <h2 class="section-title reveal">从被动灭火<br><span class="hl">到主动巡检</span></h2>
+    <p class="section-desc reveal">诊断系统把隐藏在现场基础设施里的问题提前暴露，让运维团队知道哪里需要处理，也让 AI 寻优的调节效果更容易真正落地。</p>
+    <div class="value-grid">
+      <div class="value-card reveal"><h3>主动巡检</h3><p>每日自动扫描全部区域，在问题恶化成故障之前预警。</p></div>
+      <div class="value-card reveal"><h3>精准处置</h3><p>报告直接给出位置、根因、证据和动作，减少经验式排查。</p></div>
+      <div class="value-card reveal"><h3>释放寻优潜力</h3><p>修复盲板、热源和退化空调后，寻优调节效果更容易落到实处。</p></div>
+      <div class="value-card reveal"><h3>生命周期管理</h3><p>为每台空调建立性能档案，支持预防性维护计划。</p></div>
+    </div>
+    <div class="relation-box reveal">
+      <div><h3>诊断解决调不动</h3><p>找出基础设施缺陷：热源集中、气流短路、设备退化和传感器失准。</p></div>
+      <div><h3>寻优解决怎么调</h3><p>在健康基础设施上寻找更优台数、频率、送风温度和安全余量。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-label reveal">FAQ</div>
+    <h2 class="section-title reveal">常见问题<br><span class="hl">解答售前核心关切</span></h2>
+    <div class="faq-list reveal">
+      <div class="faq-item active"><div class="faq-q"><strong>智能诊断是否替代 AI 寻优？</strong><span class="faq-arrow">⌄</span></div><div class="faq-a">不替代。诊断解决基础设施缺陷，寻优解决运行参数最优，两者互补。诊断修复“调不动”的问题后，寻优更容易持续释放节能空间。</div></div>
+      <div class="faq-item"><div class="faq-q"><strong>是否需要新增传感器？</strong><span class="faq-arrow">⌄</span></div><div class="faq-a">已部署 AI 寻优的机房通常复用既有采集链路。机柜级功率、水侧温度和水阀开度等数据会增强诊断精度，但不是基础启用门槛。</div></div>
+      <div class="faq-item"><div class="faq-q"><strong>基线冷启动期怎么办？</strong><span class="faq-arrow">⌄</span></div><div class="faq-a">物理规则引擎上线即生效；统计基线引擎在 2-4 周数据积累后自动增强。冷启动期报告会标注基线积累状态。</div></div>
+      <div class="faq-item"><div class="faq-q"><strong>无封闭通道机房是否支持？</strong><span class="faq-arrow">⌄</span></div><div class="faq-a">首版优先支持封闭冷通道和封闭热通道。无封闭通道场景建议先评估热力模型、通道配置和传感器覆盖，再确定可用诊断范围。</div></div>
+      <div class="faq-item"><div class="faq-q"><strong>报告如何指导现场？</strong><span class="faq-arrow">⌄</span></div><div class="faq-a">每张问题卡包含位置、诊断结论、证据数据、建议动作和持续时间，并按严重度排序。现场处理后可通过次日报告和 30 天趋势验证恢复效果。</div></div>
+    </div>
+    <div class="cta-band reveal">
+      <div><h3>让诊断成为寻优前的健康巡检</h3><p>先找到基础设施缺陷，再让 AI 寻优在健康边界内持续逼近最优。</p></div>
+      <div class="cta-actions">
+        <a class="btn-primary" href="../index.html">返回 AI 暖通解决方案</a>
+        <a class="btn-outline" href="#simulator">体验互动诊断</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">共济科技 · 末端机房智能诊断专题页</div>
+</footer>
+
+<script>
+(function(){
+  var revealEls = document.querySelectorAll('.reveal');
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.14 });
+  revealEls.forEach(function(el){ revealObserver.observe(el); });
+
+  var counters = document.querySelectorAll('.counter');
+  var counterObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting) return;
+      var el = entry.target;
+      var target = parseInt(el.dataset.target, 10);
+      var start = performance.now();
+      var duration = 900;
+      function tick(now){
+        var p = Math.min((now - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      counterObserver.unobserve(el);
+    });
+  }, { threshold: 0.8 });
+  counters.forEach(function(el){ counterObserver.observe(el); });
+
+  var navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  var sections = Array.from(navLinks).map(function(link){
+    return document.querySelector(link.getAttribute('href'));
+  }).filter(Boolean);
+  function setActiveNav(id){
+    navLinks.forEach(function(link){
+      link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+    });
+  }
+  function updateActiveNav(){
+    var current = sections[0];
+    var activationLine = Math.min(window.innerHeight * 0.55, 560);
+    sections.forEach(function(sec){
+      if(sec.getBoundingClientRect().top <= activationLine) current = sec;
+    });
+    if(current) setActiveNav(current.id);
+  }
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  window.addEventListener('resize', updateActiveNav);
+  window.addEventListener('hashchange', function(){ requestAnimationFrame(updateActiveNav); });
+  navLinks.forEach(function(link){
+    link.addEventListener('click', function(){
+      var id = link.getAttribute('href').slice(1);
+      setActiveNav(id);
+      requestAnimationFrame(updateActiveNav);
+    });
+  });
+  updateActiveNav();
+
+  document.querySelectorAll('.issue-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      card.classList.toggle('open');
+    });
+  });
+
+  var capabilityData = {
+    load: {
+      severity: '黄色预警',
+      severityClass: 'pill warn',
+      module: 'IT 负载',
+      title: 'G-H 列冷通道热密度异常',
+      desc: '该区域热密度是机房均值的 1.8 倍，最热点位距离温度上限仅 1.8℃，关联空调已接近高负荷运行。',
+      evidence: [['1.8x','区域热密度倍数'],['26.2℃','最热点位均温'],['85%','关联风机转速']],
+      actions: ['将该区域功耗最高的 3 台机柜迁移至温度裕度充足区域。','若无法迁移机柜，在该区域增设行级空调或补充局部冷量。']
+    },
+    airflow: {
+      severity: '黄色预警',
+      severityClass: 'pill warn',
+      module: '气流组织',
+      title: 'TC-G05 附近疑似热风侵入',
+      desc: 'TC-G05 温度偏移量 4.2℃，同区域换热效率比 0.65，低于机房平均值，过去 12 天呈渐进恶化趋势。',
+      evidence: [['4.2℃','温度偏移量'],['0.65','换热效率比'],['12天','持续恶化']],
+      actions: ['检查该位置附近机柜是否有盲板缺失。','检查通道两端挡板、门帘和线缆孔密封是否完好。']
+    },
+    ac: {
+      severity: '红色预警',
+      severityClass: 'pill red',
+      module: '空调性能',
+      title: 'AC-07 制冷性能下降',
+      desc: '在 60-65% 风机转速工况下，估算制冷量较 30 天基线下降 22%，送回风温差低于同型号平均水平。',
+      evidence: [['22%','基线下降'],['5.3℃','送回风温差'],['48h','建议检修']],
+      actions: ['检查散热器翅片是否堵塞，清洗或更换进风过滤网。','检查风机叶片、传动皮带和水侧管路状态。']
+    }
+  };
+  var sampleSeverity = document.getElementById('sampleSeverity');
+  var sampleModule = document.getElementById('sampleModule');
+  var sampleTitle = document.getElementById('sampleTitle');
+  var sampleDesc = document.getElementById('sampleDesc');
+  var sampleEvidence = document.getElementById('sampleEvidence');
+  var sampleActions = document.getElementById('sampleActions');
+  document.querySelectorAll('[data-capability]').forEach(function(card){
+    card.addEventListener('click', function(){
+      document.querySelectorAll('[data-capability]').forEach(function(item){ item.classList.remove('active'); });
+      card.classList.add('active');
+      var data = capabilityData[card.dataset.capability];
+      sampleSeverity.textContent = data.severity;
+      sampleSeverity.className = data.severityClass;
+      sampleModule.textContent = data.module;
+      sampleTitle.textContent = data.title;
+      sampleDesc.textContent = data.desc;
+      sampleEvidence.innerHTML = data.evidence.map(function(item){
+        return '<div class="evidence"><strong>' + item[0] + '</strong><span>' + item[1] + '</span></div>';
+      }).join('');
+      sampleActions.innerHTML = data.actions.map(function(text){
+        return '<div class="sample-action">' + text + '</div>';
+      }).join('');
+    });
+  });
+
+  var simData = {
+    airflow: {
+      zones: [{ id: 'gh', severity: 'active-warn' }, { id: 'ef', severity: 'active-warn' }],
+      score: 62,
+      scoreTitle: '气流组织质量下降',
+      scoreDesc: '换热效率比偏低，局部点位存在热风侵入，建议先处理密封缺陷再扩大寻优调节。',
+      cardClass: 'sim-result-card',
+      title: 'G-H 列冷通道 TC-G05 附近疑似热风侵入',
+      desc: 'TC-G05 温度偏移量 4.2℃，同区域换热效率比 0.65，过去 12 天从 2.1℃ 上升至 4.2℃，呈渐进恶化趋势。',
+      evidence: [
+        '预期冷通道温度 18.5℃，实际 22.7℃，偏移量 4.2℃。',
+        '区域换热效率比 0.65，低于机房平均值 35%。',
+        '同点位掺混指标连续 12 天上升，符合密封退化特征。'
+      ],
+      advice: [
+        '检查 G-H 列 TC-G05 附近机柜是否有盲板缺失，逐个确认空 U 位已封堵。',
+        '检查通道两端门帘、挡板、顶部封板和线缆孔密封是否完好。',
+        '修复后观察次日诊断报告中温度偏移和换热效率比是否恢复。'
+      ]
+    },
+    load: {
+      zones: [{ id: 'gh', severity: 'active-red' }],
+      score: 68,
+      scoreTitle: 'IT 负载均衡告警',
+      scoreDesc: '局部热密度高于全房均值，关联空调已经接近高负荷运行，继续调参空间有限。',
+      cardClass: 'sim-result-card red',
+      title: 'G-H 列冷通道持续性高温区域',
+      desc: '该区域热密度是机房均值的 1.8 倍，TC-G03 前一日平均温度 26.2℃，距温度上限仅 1.8℃。',
+      evidence: [
+        '区域热密度 Hd=8.4，是机房均值 5.1 的 1.6 倍。',
+        'TC-G03 紧迫度处于全机房 Top 5%，温度裕度不足 2℃。',
+        '关联空调 AC-05、AC-06 平均风机转速 85%，调节空间有限。'
+      ],
+      advice: [
+        '将 G-H 列冷通道中功耗最高的 3 台机柜迁移至 A-B 列冷通道。',
+        '迁移前确认目标区域的电力容量和制冷余量充足。',
+        '若无法迁移机柜，评估增设行级空调或补充局部冷量。'
+      ]
+    },
+    ac: {
+      zones: [{ id: 'ac07', severity: 'active-red' }],
+      score: 70,
+      scoreTitle: '空调性能退化告警',
+      scoreDesc: '同工况下制冷输出明显低于自身基线和同组均值，建议安排预防性检修。',
+      cardClass: 'sim-result-card red',
+      title: 'AC-07 制冷性能下降且离群',
+      desc: '在 60-65% 风机转速工况下，估算制冷量较 30 天基线下降 22%，送回风温差低于同型号平均水平。',
+      evidence: [
+        'Q_est 四周趋势：48.2 -> 45.1 -> 41.3 -> 37.6 kW。',
+        '送回风温差 5.3℃，同型号平均 7.8℃，偏低 32%。',
+        '水侧温差正常，优先判断为空气侧换热效率下降。'
+      ],
+      advice: [
+        '建议在 48 小时内检查散热器翅片是否堵塞，并清洗或更换进风过滤网。',
+        '检查风机叶片积灰、变形、开裂，以及传动皮带张力和磨损。',
+        '检修完成后对比次日报告中 Q_est 性能比是否恢复到 0.85 以上。'
+      ]
+    },
+    sensor: {
+      zones: [{ id: 'tc04', severity: 'active-warn' }],
+      score: 88,
+      scoreTitle: '传感器健康提示',
+      scoreDesc: '该问题先作为数据可信度风险输出，避免直接把读数异常误判为 HVAC 基础设施问题。',
+      cardClass: 'sim-result-card',
+      title: 'TC-C04 疑似漂移',
+      desc: 'TC-C04 与同组邻居的偏差中位数连续 3 天大于 2℃，其余邻居之间偏差小于 1℃。',
+      evidence: [
+        'TC-C04 与邻近传感器偏差中位数 2.4℃，连续 3 天超过阈值。',
+        '同组其他传感器之间偏差稳定在 0.6℃ 以内。',
+        '该点位仍参与诊断，但报告中标注结论需结合现场复核。'
+      ],
+      advice: [
+        '携带标定仪现场比对 TC-C04 读数，同步记录 5 分钟读数并计算偏差。',
+        '确认漂移后进行软件标定或更换传感器。',
+        '若连续 7 天异常未处理，报告中将升级为红色传感器健康卡片。'
+      ]
+    }
+  };
+
+  var currentSimScenario = 'airflow';
+  var simRunBtn = document.getElementById('simRunBtn');
+  var simStatus = document.getElementById('simStatus');
+  var simScore = document.getElementById('simScore');
+  var simScoreTitle = document.getElementById('simScoreTitle');
+  var simScoreDesc = document.getElementById('simScoreDesc');
+  var simResultCard = document.getElementById('simResultCard');
+  var simResultTitle = document.getElementById('simResultTitle');
+  var simResultDesc = document.getElementById('simResultDesc');
+  var simEvidenceList = document.getElementById('simEvidenceList');
+  var simAdviceList = document.getElementById('simAdviceList');
+
+  function resetSimOutput(){
+    document.querySelectorAll('.sim-zone').forEach(function(zone){
+      zone.classList.remove('active-warn', 'active-red');
+    });
+    if(simStatus) simStatus.textContent = 'SCENARIO READY';
+    if(simScore) simScore.textContent = '--';
+    if(simScoreTitle) simScoreTitle.textContent = '等待运行诊断';
+    if(simScoreDesc) simScoreDesc.textContent = '点击运行后，系统将模拟生成健康度、定位结果、证据链和建议动作。';
+    if(simResultCard) simResultCard.className = 'sim-result-card';
+    if(simResultTitle) simResultTitle.textContent = '尚未生成诊断结果';
+    if(simResultDesc) simResultDesc.textContent = '诊断完成后，这里会展示问题位置、根因判断和运维可执行的处置建议。';
+    if(simEvidenceList) simEvidenceList.innerHTML = '<div class="sim-evidence-item">等待诊断运行。</div>';
+    if(simAdviceList) simAdviceList.innerHTML = '<div class="sim-advice-item">等待诊断运行。</div>';
+  }
+
+  function renderSimResult(key){
+    var data = simData[key];
+    document.querySelectorAll('.sim-zone').forEach(function(zone){
+      zone.classList.remove('active-warn', 'active-red');
+    });
+    data.zones.forEach(function(item, idx){
+      var zone = document.querySelector('.sim-zone[data-zone="' + item.id + '"]');
+      if(zone){
+        zone.classList.add(item.severity);
+        var pin = zone.querySelector('.sim-pin');
+        if(pin) pin.textContent = String(idx + 1);
+      }
+    });
+    simStatus.textContent = 'REPORT GENERATED';
+    simScore.textContent = data.score;
+    simScoreTitle.textContent = data.scoreTitle;
+    simScoreDesc.textContent = data.scoreDesc;
+    simResultCard.className = data.cardClass;
+    simResultTitle.textContent = data.title;
+    simResultDesc.textContent = data.desc;
+    simEvidenceList.innerHTML = data.evidence.map(function(text){
+      return '<div class="sim-evidence-item">' + text + '</div>';
+    }).join('');
+    simAdviceList.innerHTML = data.advice.map(function(text){
+      return '<div class="sim-advice-item">' + text + '</div>';
+    }).join('');
+  }
+
+  document.querySelectorAll('[data-sim-scenario]').forEach(function(card){
+    card.addEventListener('click', function(){
+      currentSimScenario = card.dataset.simScenario;
+      document.querySelectorAll('[data-sim-scenario]').forEach(function(item){ item.classList.remove('active'); });
+      card.classList.add('active');
+      resetSimOutput();
+    });
+  });
+  if(simRunBtn){
+    resetSimOutput();
+    simRunBtn.addEventListener('click', function(){
+      simRunBtn.disabled = true;
+      simRunBtn.textContent = '诊断运行中...';
+      simStatus.textContent = 'RUNNING RULES';
+      setTimeout(function(){
+        renderSimResult(currentSimScenario);
+        simRunBtn.disabled = false;
+        simRunBtn.textContent = '重新运行诊断';
+      }, 650);
+    });
+  }
+
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    item.querySelector('.faq-q').addEventListener('click', function(){
+      var active = item.classList.contains('active');
+      document.querySelectorAll('.faq-item').forEach(function(faq){ faq.classList.remove('active'); });
+      if(!active) item.classList.add('active');
+    });
+  });
+})();
+</script>
+</body>
+</html>
