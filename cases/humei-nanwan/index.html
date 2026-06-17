@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互盟南湾数据中心 AI 节能项目案例</title>
+<link rel="icon" href="../../images/logo.png">
+<style>
+:root{
+  --bg-deep:#091422;
+  --bg-base:#0E1E35;
+  --bg-card:rgba(20,40,72,.80);
+  --bg-glass:rgba(28,52,90,.55);
+  --border-dim:rgba(100,180,255,.14);
+  --border-glow:rgba(0,212,255,.30);
+  --cyan:#00D4FF;
+  --cyan-dim:rgba(0,212,255,.18);
+  --blue:#1E6FFF;
+  --blue-dim:rgba(30,111,255,.15);
+  --green:#00E68A;
+  --amber:#F59E0B;
+  --amber-dim:rgba(245,158,11,.18);
+  --orange:#FF8C42;
+  --red:#FF4D6A;
+  --text-bright:#F4F9FF;
+  --text-main:#D6E6F6;
+  --text-sub:#9BB8D4;
+  --text-dim:#607A96;
+  --font-sans:"PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --font-mono:"SF Mono","Fira Code","Cascadia Code",monospace;
+  --radius:12px;
+  --radius-lg:20px;
+  --shadow-card:0 4px 24px rgba(0,0,0,.4),0 0 1px rgba(0,212,255,.15);
+  --shadow-glow:0 0 40px rgba(0,212,255,.12);
+  --transition:.35s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px;scrollbar-width:thin;scrollbar-color:var(--text-dim) transparent}
+body{font-family:var(--font-sans);background:var(--bg-deep);color:var(--text-main);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse 70% 50% at 18% 8%,rgba(0,212,255,.07),transparent 70%),radial-gradient(ellipse 60% 50% at 88% 70%,rgba(30,111,255,.06),transparent 72%)}
+a{color:var(--cyan);text-decoration:none;transition:color var(--transition)}
+a:hover{color:#fff}
+a:focus-visible,.btn-primary:focus-visible,.btn-outline:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.grid-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--border-dim) 1px,transparent 1px),linear-gradient(90deg,var(--border-dim) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,black 20%,transparent 80%);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,black 20%,transparent 80%)}
+.container{max-width:1200px;margin:0 auto;padding:0 40px}
+.section{position:relative;padding:112px 0;overflow:hidden}
+section[id]{scroll-margin-top:76px}
+.section-label{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:16px}
+.section-label::before{content:"";width:24px;height:2px;background:var(--cyan);border-radius:1px}
+.section-title{font-size:clamp(28px,4vw,42px);font-weight:700;color:var(--text-bright);line-height:1.3;margin-bottom:16px}
+.section-title .hl{background:linear-gradient(90deg,var(--cyan),var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.section-desc{font-size:17px;color:var(--text-sub);max-width:720px;line-height:1.8}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.case-hero .reveal{opacity:1;transform:none}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:18px;background:rgba(6,14,26,.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border-dim)}
+.nav-logo{display:flex;align-items:center;gap:10px;color:var(--text-bright);font-size:15px;font-weight:700;white-space:nowrap}
+.nav-logo img{height:26px;width:auto;filter:brightness(1.2) contrast(1.1) drop-shadow(0 0 8px rgba(255,255,255,.2))}
+.nav-links{display:flex;gap:2px;list-style:none;flex:1;justify-content:center;overflow:hidden}
+.nav-links a{display:block;padding:5px 9px;border-radius:7px;font-size:12.5px;color:var(--text-sub);white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:var(--text-bright);background:var(--bg-glass)}
+.nav-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.btn-primary,.btn-outline{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border-radius:10px;font-size:14px;font-weight:600;font-family:var(--font-sans);transition:all var(--transition);cursor:pointer}
+.btn-primary{color:#fff;border:none;background:linear-gradient(135deg,var(--cyan),var(--blue))}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,212,255,.3)}
+.btn-outline{color:var(--text-bright);border:1px solid var(--border-glow);background:transparent}
+.btn-outline:hover{background:var(--bg-glass);border-color:var(--cyan)}
+.case-hero{min-height:100vh;display:flex;align-items:center;padding-top:72px}
+.case-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(9,20,34,.72),rgba(9,20,34,.30) 48%,rgba(9,20,34,.78));z-index:1;pointer-events:none}
+.case-hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:.42;mix-blend-mode:luminosity;filter:brightness(.82) contrast(1.15);mask-image:linear-gradient(to bottom,black 0%,black 74%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,black 0%,black 74%,transparent 100%)}
+.case-hero .container{position:relative;z-index:2}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:56px;align-items:center}
+.case-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;background:var(--cyan-dim);border:1px solid var(--border-glow);font-size:13px;color:var(--cyan);font-weight:500;margin-bottom:28px}
+.case-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.6)}}
+.case-title{font-size:clamp(38px,5.2vw,64px);font-weight:800;line-height:1.15;color:var(--text-bright);margin-bottom:20px}
+.case-title span{background:linear-gradient(90deg,var(--cyan),var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.case-subtitle{font-size:19px;color:var(--text-sub);line-height:1.8;max-width:650px;margin-bottom:36px}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+.case-facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;max-width:680px}
+.case-facts span{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border-dim);color:var(--text-sub);font-size:12px;line-height:1.2}
+.case-facts b{color:var(--text-bright);font-weight:700}
+.metric-panel{position:relative;overflow:hidden;padding:28px;background:linear-gradient(180deg,rgba(20,40,72,.88),rgba(10,24,42,.94));border:1px solid var(--border-glow);border-radius:var(--radius-lg);box-shadow:var(--shadow-glow)}
+.metric-panel::before{content:"";position:absolute;inset:-1px;background:linear-gradient(135deg,rgba(0,212,255,.16),transparent 32%,rgba(245,158,11,.10));pointer-events:none}
+.metric-panel>*{position:relative;z-index:1}
+.metric-panel-title{font-size:13px;color:var(--cyan);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:22px}
+.hero-metrics{display:grid;gap:16px}
+.hero-metric{position:relative;overflow:hidden;padding:18px;border-radius:var(--radius);background:rgba(255,255,255,.035);border:1px solid var(--border-dim)}
+.hero-metric.accent{border-color:rgba(0,230,138,.24);background:linear-gradient(135deg,rgba(0,230,138,.08),rgba(255,255,255,.03))}
+.hero-metric strong{display:block;font-size:32px;line-height:1.1;font-family:var(--font-mono);color:var(--text-bright);margin-bottom:6px}
+.hero-metric span{font-size:13px;color:var(--text-sub)}
+.hero-metric.accent strong{color:var(--green)}
+.metric-note{margin-top:16px;padding-top:16px;border-top:1px solid var(--border-dim);font-size:12px;color:var(--text-dim);line-height:1.7}
+.overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.overview-card,.problem-card,.value-card{padding:28px;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);transition:all var(--transition)}
+.overview-card:hover,.problem-card:hover,.value-card:hover{border-color:var(--border-glow);transform:translateY(-3px);box-shadow:var(--shadow-glow)}
+.overview-card strong,.problem-card strong,.value-card strong{display:block;color:var(--text-bright);font-size:18px;margin-bottom:10px}
+.overview-card span,.problem-card span,.value-card span{display:block;color:var(--text-sub);font-size:14px;line-height:1.7}
+.system-preview{background:linear-gradient(180deg,var(--bg-deep),var(--bg-base))}
+.preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:44px;padding:16px;align-items:stretch;border:1px solid var(--border-dim);border-radius:28px;background:linear-gradient(135deg,rgba(20,40,72,.46),rgba(6,14,26,.62));box-shadow:0 24px 80px rgba(0,0,0,.26)}
+.preview-card{position:relative;min-height:300px;border:1px solid var(--border-dim);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(20,40,72,.72),rgba(10,24,42,.92));box-shadow:var(--shadow-card);overflow:hidden;transition:border-color var(--transition),box-shadow var(--transition)}
+.preview-card.feature{height:clamp(320px,34vw,430px);min-height:0}
+.preview-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 28% 18%,rgba(0,212,255,.12),transparent 42%);pointer-events:none;z-index:1}
+.preview-card:hover{border-color:var(--border-glow);box-shadow:0 20px 56px rgba(0,0,0,.36),0 0 38px rgba(0,212,255,.10)}
+.preview-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.86;transform:scale(1.01);transition:opacity var(--transition),transform var(--transition)}
+.preview-card:hover img{opacity:.94;transform:scale(1.025)}
+.preview-caption{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:24px;background:linear-gradient(transparent,rgba(6,14,26,.86) 38%,rgba(6,14,26,.98));border-top:1px solid rgba(100,180,255,.08);backdrop-filter:blur(2px)}
+.preview-caption::before{content:"";position:absolute;left:24px;right:24px;top:0;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
+.preview-caption small{display:block;margin-bottom:7px;color:var(--amber);font-size:11px;font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase}
+.preview-caption strong{display:block;color:var(--text-bright);font-size:18px;margin-bottom:8px}
+.preview-caption span{display:block;color:var(--text-sub);font-size:14px;line-height:1.7}
+.preview-side{display:grid;gap:22px}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.problem-card{position:relative;overflow:hidden}
+.problem-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--cyan));opacity:.9}
+.loop-band{position:relative;overflow:hidden;margin-top:48px;padding:34px;background:linear-gradient(135deg,rgba(20,40,72,.86),rgba(9,20,34,.94));border:1px solid var(--border-dim);border-radius:var(--radius-lg);box-shadow:var(--shadow-card)}
+.loop-band::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 12% 16%,rgba(0,212,255,.12),transparent 36%),radial-gradient(circle at 86% 78%,rgba(245,158,11,.10),transparent 34%);pointer-events:none}
+.loop-steps{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.loop-steps::before{content:"";position:absolute;left:8%;right:8%;top:34px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--blue),var(--amber),transparent);opacity:.72}
+.loop-step{position:relative;z-index:1;min-height:116px;padding:18px 14px;border:1px solid var(--border-dim);border-radius:var(--radius);background:rgba(6,14,26,.52);text-align:center;transition:border-color var(--transition),background var(--transition)}
+.loop-step:hover{border-color:var(--border-glow);background:rgba(20,40,72,.72)}
+.loop-step b{display:flex;align-items:center;justify-content:center;width:34px;height:34px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,var(--cyan-dim),var(--blue-dim));border:1px solid var(--border-glow);box-shadow:0 0 18px rgba(0,212,255,.16);color:var(--cyan);font-family:var(--font-mono)}
+.loop-step span{font-size:14px;color:var(--text-bright);font-weight:700}
+.loop-step small{display:block;margin-top:6px;font-size:12px;color:var(--text-dim);line-height:1.5}
+.story-row{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px;align-items:start;margin-top:34px}
+.story-copy{position:sticky;top:84px;padding:28px;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:var(--radius-lg)}
+.story-kicker{font-size:12px;color:var(--cyan);font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.story-copy h3{font-size:25px;color:var(--text-bright);line-height:1.35;margin-bottom:12px}
+.story-copy p{font-size:15px;color:var(--text-sub);line-height:1.8}
+.story-points{display:grid;gap:10px;margin-top:20px}
+.story-point{padding:12px 14px;border-left:3px solid var(--cyan);background:rgba(255,255,255,.035);border-radius:8px;font-size:13px;color:var(--text-sub)}
+.shot-stack{display:grid;gap:18px}
+.shot-card{position:relative;background:rgba(20,40,72,.72);border:1px solid var(--border-dim);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-card);transition:border-color var(--transition),box-shadow var(--transition),transform var(--transition)}
+.shot-card:hover{border-color:var(--border-glow);box-shadow:0 18px 54px rgba(0,0,0,.34),0 0 34px rgba(0,212,255,.08);transform:translateY(-2px)}
+.shot-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid var(--border-dim);background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0))}
+.shot-head h4{font-size:17px;color:var(--text-bright);line-height:1.4}
+.shot-head span{padding:3px 8px;border:1px solid var(--border-dim);border-radius:999px;background:rgba(0,212,255,.07);font-size:12px;color:var(--cyan);font-family:var(--font-mono);white-space:nowrap}
+.shot-card p{padding:0 20px 18px;color:var(--text-sub);font-size:14px;line-height:1.7}
+.shot-card img{display:block;width:100%;height:auto;background:#06101d;border-bottom:1px solid rgba(100,180,255,.10)}
+.shot-card.tall img{max-height:760px;object-fit:contain}
+.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.evidence-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:34px}
+.evidence-grid .shot-card{height:100%}
+.evidence-grid .featured-shot{grid-column:1/-1}
+.evidence-grid .featured-shot img{max-height:680px;object-fit:contain}
+.quote-panel{margin-top:48px;padding:36px;background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(30,111,255,.04));border:1px solid var(--border-glow);border-radius:var(--radius-lg)}
+.quote-panel p{font-size:19px;color:var(--text-main);line-height:1.9}
+.footer-cta{padding:80px 0 96px;background:var(--bg-base)}
+.footer-box{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;padding:34px;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:var(--radius-lg)}
+.footer-box h2{font-size:28px;color:var(--text-bright);line-height:1.35;margin-bottom:8px}
+.footer-box p{color:var(--text-sub);font-size:15px}
+.footer-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:1024px){
+  .nav-links{display:none}
+  .hero-grid,.story-row{grid-template-columns:1fr}
+  .story-copy{position:relative;top:auto}
+  .overview-grid,.preview-grid,.problem-grid,.value-grid{grid-template-columns:1fr}
+  .preview-card.feature{min-height:360px}
+  .loop-steps{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:720px){
+  .container{padding:0 20px}
+  .section{padding:80px 0}
+  .nav{padding:0 16px}
+  .nav-logo span{display:none}
+  .case-hero{min-height:auto;padding:112px 0 72px}
+  .case-title{font-size:36px}
+  .case-subtitle{font-size:16px}
+  .case-facts{display:grid}
+  .metric-panel{padding:22px}
+  .hero-metric strong{font-size:28px}
+  .preview-grid{padding:10px;border-radius:22px}
+  .preview-card,.preview-card.feature{min-height:260px}
+  .loop-steps{grid-template-columns:repeat(2,1fr)}
+  .loop-steps::before{display:none}
+  .evidence-grid{grid-template-columns:1fr}
+  .evidence-grid .featured-shot{grid-column:auto}
+  .footer-box{grid-template-columns:1fr}
+  .footer-actions{justify-content:flex-start}
+  .btn-primary,.btn-outline{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="../../index.html#cases"><img src="../../images/logo.png" alt="共济科技"><span>互盟南湾案例</span></a>
+  <ul class="nav-links">
+    <li><a href="#overview" class="active">项目概览</a></li>
+    <li><a href="#preview">系统预览</a></li>
+    <li><a href="#diagnosis">进场诊断</a></li>
+    <li><a href="#loops">闭环落地</a></li>
+    <li><a href="#evidence">系统截图</a></li>
+    <li><a href="#value">运营价值</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a class="btn-outline" href="../../index.html#cases">返回首页</a>
+  </div>
+</nav>
+
+<section class="case-hero section" id="top">
+  <img class="case-hero-bg" src="../../images/案例-互盟南湾云产业基地.png" width="1074" height="561" alt="">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="case-badge reveal"><span class="dot"></span>商业 IDC 能效运营样板</div>
+        <h1 class="case-title reveal">互盟南湾数据中心<br><span>AI 节能项目复盘</span></h1>
+        <p class="case-subtitle reveal">共济以 AI 能效调优闭环体系落地南湾冷站，在不停产、不扰动业务的前提下，把节能从一次性调参升级为可持续运营能力。</p>
+        <div class="hero-actions reveal">
+          <a class="btn-primary" href="#loops">查看落地闭环 ↓</a>
+          <a class="btn-outline" href="#evidence">查看系统截图</a>
+        </div>
+        <div class="case-facts reveal">
+          <span><b>项目对象</b>南湾冷站与末端机房</span>
+          <span><b>落地方式</b>模型寻优 + 安全下发</span>
+          <span><b>验收口径</b>年均节电 / 节费折算</span>
+        </div>
+      </div>
+      <div class="metric-panel reveal">
+        <div class="metric-panel-title">Verified Outcome</div>
+        <div class="hero-metrics">
+          <div class="hero-metric accent"><strong>175万+ kWh</strong><span>按已验收数据折算的年均节省电量</span></div>
+          <div class="hero-metric accent"><strong>120万+ 元</strong><span>按已验收数据折算的年均节省电费</span></div>
+          <div class="hero-metric"><strong>全链路</strong><span>规划、建设、运营能力匹配 AI 能效管理</span></div>
+        </div>
+        <div class="metric-note">所有指标按已验收运行数据做年化展示，避免把持续运营项目写成固定周期项目。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="container">
+    <div class="section-label reveal">Project Overview</div>
+    <h2 class="section-title reveal">不是单点节能改造<br><span class="hl">而是长期能效运营能力</span></h2>
+    <p class="section-desc reveal">互盟数据深耕数据中心基础设施超过 15 年，自建自营多座数据中心，具备规划、建设、运营全链路能力。南湾云产业基地是其核心生产节点，承载金融、政务、互联网与 AI 算力等高等级业务。</p>
+    <div class="overview-grid reveal">
+      <div class="overview-card"><strong>核心生产节点</strong><span>南湾云产业基地常年高负荷运行，业务连续性要求高，节能策略不能以牺牲安全为代价。</span></div>
+      <div class="overview-card"><strong>全链路运营能力</strong><span>客户具备从规划建设到运维管理的完整能力，适合承接持续建模、持续寻优和持续验收机制。</span></div>
+      <div class="overview-card"><strong>可核算节能诉求</strong><span>项目不仅要省电，更要能说明电省在哪里、怎么算出来、能否在后续运营中持续复核。</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section system-preview" id="preview">
+  <div class="container">
+    <div class="section-label reveal">System Preview</div>
+    <h2 class="section-title reveal">从总览到冷站<br><span class="hl">先看系统怎样承载运营</span></h2>
+    <p class="section-desc reveal">先用两个宽屏入口建立现场范围：建筑全景用于说明园区、楼层和能效概况，冷站全景用于说明 AI 推荐如何进入日常运维界面。</p>
+    <div class="preview-grid reveal">
+      <article class="preview-card feature">
+        <img src="../../images/cases/humei-nanwan/13-operations-wide-cold-station.png" width="2934" height="1320" alt="冷站运营宽屏预览">
+        <div class="preview-caption"><small>Operations View 01</small><strong>冷站运营全景</strong><span>3D 冷站、关键指标、运行趋势和寻优记录在同一视图内联动，适合解释 AI 推荐如何进入日常运维。</span></div>
+      </article>
+      <article class="preview-card feature">
+        <img src="../../images/cases/humei-nanwan/14-operations-wide-overview.png" width="3000" height="1344" alt="系统总览宽屏预览">
+        <div class="preview-caption"><small>Operations View 02</small><strong>建筑与能效总览</strong><span>从建筑全景进入能耗、能效和寻优状态，帮助售前沟通快速对齐现场范围。</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="diagnosis" style="background:var(--bg-base)">
+  <div class="container">
+    <div class="section-label reveal">Initial Diagnosis</div>
+    <h2 class="section-title reveal">进场诊断先回答<br><span class="hl">为什么传统调参不够</span></h2>
+    <p class="section-desc reveal">南湾冷站是典型水冷系统，冷水主机、末端精密空调、冷冻/冷却水泵、冷却塔长期耦合运行。真正的节能空间藏在系统协同和持续验证里。</p>
+    <div class="problem-grid reveal">
+      <div class="problem-card"><strong>控制偏经验</strong><span>主机供水温度、水泵频率、冷却塔出水温度长期依赖固定参数，各设备各管各的，整体工况离最优有距离。</span></div>
+      <div class="problem-card"><strong>输配隐性浪费</strong><span>冷冻水、冷却水侧温差偏小、流量偏大，大量电耗消耗在多跑的水上，人工很难持续识别和纠偏。</span></div>
+      <div class="problem-card"><strong>效果难自证</strong><span>负荷、天气、电价都在变化，没有分项能耗和 CLF 对比基线，节能结果就难以形成可审计证据。</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="loops">
+  <div class="container">
+    <div class="section-label reveal">Closed Loop Delivery</div>
+    <h2 class="section-title reveal">六个闭环落地<br><span class="hl">从推荐值到持续运营机制</span></h2>
+    <p class="section-desc reveal">共济在南湾交付的不是一次调参，而是数据、模型、仿真、寻优、下发、验证的完整链路。低风险参数自动或半自动执行，高风险动作保留人工确认。</p>
+    <div class="loop-band reveal">
+      <div class="loop-steps">
+        <div class="loop-step"><b>1</b><span>数据</span><small>采集清洗<br>稳态识别</small></div>
+        <div class="loop-step"><b>2</b><span>模型</span><small>设备建模<br>偏差校验</small></div>
+        <div class="loop-step"><b>3</b><span>仿真</span><small>上线前预测<br>安全边界</small></div>
+        <div class="loop-step"><b>4</b><span>寻优</span><small>柔性/全局<br>长周期策略</small></div>
+        <div class="loop-step"><b>5</b><span>下发</span><small>分层控制<br>工单确认</small></div>
+        <div class="loop-step"><b>6</b><span>验证</span><small>CLF 分析<br>月度报告</small></div>
+      </div>
+    </div>
+
+    <div class="story-row">
+      <div class="story-copy reveal">
+        <div class="story-kicker">01 / Modeling</div>
+        <h3>模型先可信，寻优才敢进现场</h3>
+        <p>系统覆盖冷机、水泵、冷却塔等关键设备，先完成机理模型训练和验证集评估，确保预测值与实际值贴合，再进入策略寻优。</p>
+        <div class="story-points">
+          <div class="story-point">覆盖全部关键设备，不再只看单个控制点。</div>
+          <div class="story-point">用验证集散点图证明模型误差处于可用范围。</div>
+        </div>
+      </div>
+      <div class="shot-stack reveal">
+        <article class="shot-card">
+          <div class="shot-head"><h4>机理模型训练列表：覆盖冷机、水泵、冷却塔等全部设备</h4><span>Model 01</span></div>
+          <img src="../../images/cases/humei-nanwan/01-model-training-list.png" width="1440" height="742" alt="机理模型训练列表">
+          <p>设备级模型训练让 AI 掌握不同设备在不同负荷和环境条件下的运行特性。</p>
+        </article>
+        <article class="shot-card">
+          <div class="shot-head"><h4>模型验证集评估：预测值 vs 实际值散点图</h4><span>Model 02</span></div>
+          <img src="../../images/cases/humei-nanwan/02-model-validation-scatter.png" width="1459" height="751" alt="模型验证集评估">
+          <p>模型上线前通过验证集评估，避免把未经验证的推荐参数直接推向现场。</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="story-row">
+      <div class="story-copy reveal">
+        <div class="story-kicker">02 / Optimization</div>
+        <h3>三层寻优协同，覆盖分钟到全天</h3>
+        <p>柔性寻优每 10 分钟微调水温和泵频；全局寻优联合计算冷机、泵、塔组合；长周期寻优结合未来 24 小时天气和负荷预测，提前调整策略。</p>
+        <div class="story-points">
+          <div class="story-point">短期微调解决当前工况效率。</div>
+          <div class="story-point">全局协同避免各设备局部最优、整体低效。</div>
+          <div class="story-point">长周期预测减少被动响应带来的能耗波动。</div>
+        </div>
+      </div>
+      <div class="shot-stack reveal">
+        <article class="shot-card tall">
+          <div class="shot-head"><h4>冷站寻优全貌：寻优策略 + 智控下发 + 安全回退 + 3D 冷站 + 寻优记录</h4><span>Opt 01</span></div>
+          <img src="../../images/cases/humei-nanwan/03-cold-station-optimization-overview.png" width="1442" height="1496" alt="冷站寻优全貌">
+          <p>系统把推荐策略、下发模式、安全回退和历史记录放在同一运行界面中，便于运维理解每一次调整。</p>
+        </article>
+        <article class="shot-card">
+          <div class="shot-head"><h4>寻优前后控制策略对比</h4><span>Opt 02</span></div>
+          <img src="../../images/cases/humei-nanwan/04-control-strategy-comparison.png" width="1491" height="753" alt="寻优前后控制策略对比">
+          <p>对比寻优前后的控制参数，明确 AI 推荐值带来的调节方向和幅度。</p>
+        </article>
+        <article class="shot-card">
+          <div class="shot-head"><h4>能效预测：冷量、湿球温度、功率 24h 预测曲线</h4><span>Opt 03</span></div>
+          <img src="../../images/cases/humei-nanwan/05-energy-forecast-24h.png" width="1640" height="744" alt="能效预测曲线">
+          <p>长周期寻优通过未来负荷与气象预测，让冷站从被动响应转向主动规划。</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="story-row">
+      <div class="story-copy reveal">
+        <div class="story-kicker">03 / Terminal Room</div>
+        <h3>冷站和末端联动，节能不在最后一公里打折</h3>
+        <p>冷站解决源头怎么供冷，末端解决机房里怎么用冷。系统根据冷通道温度和 IT 负荷，为精密空调计算送风温度和风机转速。</p>
+        <div class="story-points">
+          <div class="story-point">热点区域增冷，温度裕度充足区域升温省电。</div>
+          <div class="story-point">风机转速下降能带来显著功耗下降。</div>
+        </div>
+      </div>
+      <div class="shot-stack reveal">
+        <article class="shot-card tall">
+          <div class="shot-head"><h4>末端机房寻优：3D 机房布局 + 精密空调柔性寻优参数</h4><span>Terminal</span></div>
+          <img src="../../images/cases/humei-nanwan/06-terminal-room-optimization.png" width="1438" height="1488" alt="末端机房寻优">
+          <p>末端精细化调节把冷站效率提升传导到每一排机柜前，避免供冷效率在末端被抵消。</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="story-row">
+      <div class="story-copy reveal">
+        <div class="story-kicker">04 / Safety & Verification</div>
+        <h3>先仿真、过边界，再进入控制链路</h3>
+        <p>每条推荐参数上线前先进行仿真校验和安全边界判断。系统不是替运维拍板，而是把判断依据摆在台面上。</p>
+        <div class="story-points">
+          <div class="story-point">冷冻泵、冷却泵、冷却塔频率等低风险动作可自动化。</div>
+          <div class="story-point">冷机切机等高风险动作仍通过工单和人工确认。</div>
+        </div>
+      </div>
+      <div class="shot-stack reveal">
+        <article class="shot-card">
+          <div class="shot-head"><h4>仿真校验成功：所有变量预测偏差均在阈值内</h4><span>Safety</span></div>
+          <img src="../../images/cases/humei-nanwan/07-simulation-validation.png" width="1444" height="742" alt="仿真校验成功">
+          <p>仿真结果为控制动作提供事前依据，让 AI 推荐先经过现场可接受的安全边界。</p>
+        </article>
+        <article class="shot-card">
+          <div class="shot-head"><h4>节能分析看板：节能总览 + 设备 CLF 对比 + 日趋势 + 月趋势</h4><span>Report</span></div>
+          <img src="../../images/cases/humei-nanwan/08-energy-analysis-dashboard.png" width="1637" height="745" alt="节能分析看板">
+          <p>系统自动生成节能分析，不再依赖人工手算，让月度节能量、节能率和设备 CLF 可持续复核。</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="evidence" style="background:var(--bg-base)">
+  <div class="container">
+    <div class="section-label reveal">System Evidence</div>
+    <h2 class="section-title reveal">系统关键截图<br><span class="hl">证明能力已经进入日常运营</span></h2>
+    <p class="section-desc reveal">案例页保留核心系统截图，覆盖总览、能流、机房 pPUE 和能效排行，帮助售前沟通从“讲能力”切换到“看证据”。</p>
+    <div class="evidence-grid reveal">
+      <article class="shot-card">
+        <div class="shot-head"><h4>冷源视图：暖通设备监控与寻优结果</h4><span>Cold Source</span></div>
+        <img src="../../images/cases/humei-nanwan/12-cold-source-monitoring.png" width="1630" height="743" alt="冷源视图暖通设备监控与寻优结果">
+        <p>冷源侧可直接查看设备运行、关键指标和寻优结果，支撑从现场运行对象解释节能策略。</p>
+      </article>
+      <article class="shot-card">
+        <div class="shot-head"><h4>系统总览：3D 建筑全景 + 能耗/能效/寻优面板</h4><span>Dashboard</span></div>
+        <img src="../../images/cases/humei-nanwan/09-system-overview.png" width="1632" height="740" alt="系统总览">
+        <p>从一屏查看建筑全景、能耗能效、关键指标和寻优状态。</p>
+      </article>
+      <article class="shot-card featured-shot">
+        <div class="shot-head"><h4>能流图：数据中心整体能耗分布与分项功率趋势</h4><span>Energy Flow</span></div>
+        <img src="../../images/cases/humei-nanwan/10-energy-flow-dashboard.png" width="2976" height="1376" alt="能流图">
+        <p>把数据中心总进线、机房、暖通、配电和其他能耗流向拆开看清。</p>
+      </article>
+      <article class="shot-card">
+        <div class="shot-head"><h4>机房视图：4 层 pPUE 趋势 + 能效排行</h4><span>Room pPUE</span></div>
+        <img src="../../images/cases/humei-nanwan/11-room-ppue-ranking.png" width="1637" height="784" alt="机房 pPUE 趋势和能效排行">
+        <p>从全站 PUE 下钻到机房级 pPUE，快速定位能效偏低的楼层和机房。</p>
+      </article>
+      <article class="shot-card">
+        <div class="shot-head"><h4>互盟数据中心 3D 平面布局</h4><span>Layout</span></div>
+        <img src="../../images/案例-互盟数据中心3D平面布局.png" width="1104" height="575" alt="互盟数据中心 3D 平面布局">
+        <p>结合空间布局说明冷站和末端协同的现场范围。</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="value">
+  <div class="container">
+    <div class="section-label reveal">Operating Value</div>
+    <h2 class="section-title reveal">三重价值沉淀<br><span class="hl">省钱、看清、跑得久</span></h2>
+    <p class="section-desc reveal">项目价值不止于节省电费，更在于把能效管理的颗粒度从全站均值拉到机房级，把重复计算和策略验证交给系统，把运维注意力留给边界判断。</p>
+    <div class="value-grid reveal">
+      <div class="value-card"><strong>节能效益可折算</strong><span>按已验收运行数据折算，年均节省电量超 175 万 kWh，年均节省电费超 120 万元。</span></div>
+      <div class="value-card"><strong>能效颗粒度变细</strong><span>机房级 pPUE、分项功率趋势、设备 CLF 和能流图让每一度电去了哪里可追踪。</span></div>
+      <div class="value-card"><strong>运营能力可复制</strong><span>模型偏差可重训，设备变化可调边界，季节切换可更新策略，节能结果持续回到数据里验证。</span></div>
+    </div>
+    <div class="quote-panel reveal">
+      <p>互盟南湾案例证明：AI 节能不是把控制权一次性交给算法，而是在安全边界、现场工况和运营流程之间建立持续闭环，让冷站从被动成本中心转变为可持续优化的效率单元。</p>
+    </div>
+  </div>
+</section>
+
+<section class="footer-cta">
+  <div class="container">
+    <div class="footer-box reveal">
+      <div>
+        <h2>评估你的数据中心是否具备 AI 节能落地条件</h2>
+        <p>先看数据采集是否完整、控制链路是否可通、安全边界是否清晰、节能效果如何验证，再决定怎么做。</p>
+      </div>
+      <div class="footer-actions">
+        <a class="btn-primary" href="../../index.html#cases">返回成功案例</a>
+        <a class="btn-outline" href="../../index.html#implement">查看实施保障</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var reveals=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){reveals.forEach(function(el){el.classList.add('visible')});return}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){entry.target.classList.add('visible');io.unobserve(entry.target)}
+    });
+  },{threshold:.12});
+  reveals.forEach(function(el){io.observe(el)});
+
+  var sections=[].slice.call(document.querySelectorAll('section[id]'));
+  var links=[].slice.call(document.querySelectorAll('.nav-links a'));
+  var navIo=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting)return;
+      links.forEach(function(link){
+        link.classList.toggle('active',link.getAttribute('href')==='#'+entry.target.id);
+      });
+    });
+  },{rootMargin:'-35% 0px -55% 0px',threshold:0});
+  sections.forEach(function(section){navIo.observe(section)});
+})();
+</script>
+</body>
+</html>

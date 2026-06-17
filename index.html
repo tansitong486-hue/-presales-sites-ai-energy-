@@ -1083,6 +1083,9 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-grad
 .case-metrics{display:flex;flex-wrap:wrap;gap:16px 28px}
 .case-metric-value{font-size:22px;font-weight:800;font-family:var(--font-mono);line-height:1.2}
 .case-metric-label{font-size:12px;color:var(--text-dim);margin-top:2px}
+.case-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.case-link{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:8px;border:1px solid var(--border-glow);background:rgba(0,212,255,.08);color:var(--text-bright);font-size:13px;font-weight:700;transition:all var(--transition)}
+.case-link:hover{border-color:var(--cyan);background:var(--cyan-dim);transform:translateY(-1px)}
 .case-detail{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1),padding .5s cubic-bezier(.4,0,.2,1);padding:0 32px;border-top:1px solid transparent}
 .case-card.active .case-detail{max-height:800px;padding:20px 32px 28px;border-top-color:var(--border-dim)}
 .case-detail-row{margin-bottom:14px;font-size:14px;color:var(--text-sub);line-height:1.7}
@@ -2699,18 +2702,21 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-grad
         <div class="case-header">
           <span class="case-tag" style="background:rgba(168,85,247,.12);color:#A855F7">商业 IDC</span>
           <div class="case-name">互盟（深圳）南湾云数据中心</div>
-          <div class="case-highlight">2000 机柜规模，年节省超 70 万元</div>
+          <div class="case-highlight">商业 IDC 能效运营样板，年均节电费 120 万+</div>
           <div class="case-metrics">
-            <div class="case-metric"><span class="case-metric-value" style="color:#A855F7">1.365</span><span class="case-metric-label">年化 PUE</span></div>
-            <div class="case-metric"><span class="case-metric-value" style="color:#A855F7">13.9%</span><span class="case-metric-label">暖通节能率</span></div>
-            <div class="case-metric"><span class="case-metric-value" style="color:#A855F7">73.68 万</span><span class="case-metric-label">年节电费</span></div>
+            <div class="case-metric"><span class="case-metric-value" style="color:#A855F7">175万+</span><span class="case-metric-label">年均节电 kWh</span></div>
+            <div class="case-metric"><span class="case-metric-value" style="color:#A855F7">120万+</span><span class="case-metric-label">年均节电费</span></div>
+            <div class="case-metric"><span class="case-metric-value" style="color:#A855F7">全链路</span><span class="case-metric-label">能效运营能力</span></div>
+          </div>
+          <div class="case-actions">
+            <a class="case-link" href="cases/humei-nanwan/index.html">查看完整案例 →</a>
           </div>
         </div>
         <div class="case-detail">
-          <div class="case-detail-row"><strong>项目背景</strong>互盟南湾云数据中心位于深圳，总规模 2000 机柜，是典型的商业 IDC 运营场景。客户对运营成本极度敏感，电费是最大的可控支出项，迫切需要在不影响 SLA 的前提下降本增效。</div>
-          <div class="case-detail-row"><strong>核心痛点</strong>商业 IDC 上架率波动大，不同租户功率密度差异明显，冷站长期按峰值配置运行导致低负载段效率低下；运维团队人手有限，难以做到精细化能效管理。</div>
-          <div class="case-detail-row"><strong>共济方案</strong>部署冷站 AI 节能优化方案，根据实时 IT 负载动态调整冷站运行策略，实现冷机 / 水泵 / 冷塔的智能协同调度，同时结合天气预报进行长周期寻优规划。</div>
-          <div class="case-detail-row"><strong>最终效果</strong>年化 PUE 降至 <strong>1.365</strong>，暖通系统节能率 <strong>13.9%</strong>，年节省电费 <strong>73.68 万元</strong>。投资回收期不到 2 年，客户已签订二期拓展合同。</div>
+          <div class="case-detail-row"><strong>项目背景</strong>互盟数据深耕数据中心基础设施超过 15 年，自建自营多座数据中心，具备规划、建设、运营全链路能力。南湾云产业基地是其核心生产节点，承载金融、政务、互联网与 AI 算力等高等级业务。</div>
+          <div class="case-detail-row"><strong>核心痛点</strong>南湾冷站控制偏经验，主机供水温度、水泵频率、冷却塔策略长期依赖固定参数；冷冻、冷却水侧存在温差偏小、流量偏大的隐性浪费，节能效果也需要可核算、可追踪。</div>
+          <div class="case-detail-row"><strong>共济方案</strong>部署冷站 AI 节能优化，围绕数据、模型、仿真、寻优、下发、验证建立持续能效运营机制；低风险参数自动或半自动下发，高风险动作保留人工确认。</div>
+          <div class="case-detail-row"><strong>最终效果</strong>按已验收运行数据折算，年均节省电量超 <strong>175 万 kWh</strong>，年均节省电费超 <strong>120 万元</strong>。同时形成机房级 pPUE、分项能耗与 CLF 的持续看板，让能效管理从总账下钻到机房级。</div>
         </div>
         <div class="case-expand-hint"><span class="hint-text">点击展开详情 ↓</span><span class="hint-text-close">收起 ↑</span></div>
       </div>
@@ -3752,7 +3758,8 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-grad
 
   /* --- S9: Case Card Toggle --- */
   document.querySelectorAll('[data-case]').forEach(function(card){
-    card.addEventListener('click',function(){
+    card.addEventListener('click',function(event){
+      if(event.target.closest('a'))return;
       var isActive=card.classList.contains('active');
       document.querySelectorAll('[data-case]').forEach(function(c){c.classList.remove('active')});
       if(!isActive)card.classList.add('active');
