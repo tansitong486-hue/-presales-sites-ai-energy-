@@ -97,14 +97,15 @@ section[id]{scroll-margin-top:76px}
 .overview-card strong,.problem-card strong,.value-card strong{display:block;color:var(--text-bright);font-size:18px;margin-bottom:10px}
 .overview-card span,.problem-card span,.value-card span{display:block;color:var(--text-sub);font-size:14px;line-height:1.7}
 .system-preview{background:linear-gradient(180deg,var(--bg-deep),var(--bg-base))}
-.preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:44px;padding:16px;align-items:stretch;border:1px solid var(--border-dim);border-radius:28px;background:linear-gradient(135deg,rgba(20,40,72,.46),rgba(6,14,26,.62));box-shadow:0 24px 80px rgba(0,0,0,.26)}
-.preview-card{position:relative;min-height:300px;border:1px solid var(--border-dim);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(20,40,72,.72),rgba(10,24,42,.92));box-shadow:var(--shadow-card);overflow:hidden;transition:border-color var(--transition),box-shadow var(--transition)}
-.preview-card.feature{height:clamp(320px,34vw,430px);min-height:0}
-.preview-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 28% 18%,rgba(0,212,255,.12),transparent 42%);pointer-events:none;z-index:1}
+.preview-grid{display:grid;grid-template-columns:1fr;gap:26px;margin-top:44px;padding:18px;align-items:stretch;border:1px solid var(--border-dim);border-radius:28px;background:linear-gradient(135deg,rgba(20,40,72,.46),rgba(6,14,26,.62));box-shadow:0 24px 80px rgba(0,0,0,.26)}
+.preview-card{position:relative;border:1px solid var(--border-dim);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(20,40,72,.72),rgba(10,24,42,.92));box-shadow:var(--shadow-card);overflow:hidden;transition:border-color var(--transition),box-shadow var(--transition)}
+.preview-card.feature{min-height:0}
+.preview-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 28% 18%,rgba(0,212,255,.10),transparent 42%);pointer-events:none;z-index:1}
 .preview-card:hover{border-color:var(--border-glow);box-shadow:0 20px 56px rgba(0,0,0,.36),0 0 38px rgba(0,212,255,.10)}
-.preview-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.86;transform:scale(1.01);transition:opacity var(--transition),transform var(--transition)}
-.preview-card:hover img{opacity:.94;transform:scale(1.025)}
-.preview-caption{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:24px;background:linear-gradient(transparent,rgba(6,14,26,.86) 38%,rgba(6,14,26,.98));border-top:1px solid rgba(100,180,255,.08);backdrop-filter:blur(2px)}
+.preview-frame{position:relative;z-index:2;padding:16px;background:linear-gradient(180deg,rgba(6,14,26,.64),rgba(6,14,26,.34));border-bottom:1px solid rgba(100,180,255,.10)}
+.preview-frame img{display:block;width:100%;height:auto;aspect-ratio:2.22/1;object-fit:contain;border-radius:14px;background:#06101d;opacity:.94;transition:opacity var(--transition)}
+.preview-card:hover .preview-frame img{opacity:1}
+.preview-caption{position:relative;z-index:2;padding:22px 24px;background:linear-gradient(180deg,rgba(12,28,50,.86),rgba(8,18,32,.96));border-top:1px solid rgba(0,212,255,.12)}
 .preview-caption::before{content:"";position:absolute;left:24px;right:24px;top:0;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
 .preview-caption small{display:block;margin-bottom:7px;color:var(--amber);font-size:11px;font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase}
 .preview-caption strong{display:block;color:var(--text-bright);font-size:18px;margin-bottom:8px}
@@ -255,11 +256,11 @@ section[id]{scroll-margin-top:76px}
     <p class="section-desc reveal">先用两个宽屏入口建立现场范围：建筑全景用于说明园区、楼层和能效概况，冷站全景用于说明 AI 推荐如何进入日常运维界面。</p>
     <div class="preview-grid reveal">
       <article class="preview-card feature">
-        <img src="../../images/cases/humei-nanwan/13-operations-wide-cold-station.png" width="2934" height="1320" alt="冷站运营宽屏预览">
+        <div class="preview-frame"><img src="../../images/cases/humei-nanwan/13-operations-wide-cold-station.png" width="2934" height="1320" alt="冷站运营宽屏预览"></div>
         <div class="preview-caption"><small>Operations View 01</small><strong>冷站运营全景</strong><span>3D 冷站、关键指标、运行趋势和寻优记录在同一视图内联动，适合解释 AI 推荐如何进入日常运维。</span></div>
       </article>
       <article class="preview-card feature">
-        <img src="../../images/cases/humei-nanwan/14-operations-wide-overview.png" width="3000" height="1344" alt="系统总览宽屏预览">
+        <div class="preview-frame"><img src="../../images/cases/humei-nanwan/14-operations-wide-overview.png" width="3000" height="1344" alt="系统总览宽屏预览"></div>
         <div class="preview-caption"><small>Operations View 02</small><strong>建筑与能效总览</strong><span>从建筑全景进入能耗、能效和寻优状态，帮助售前沟通快速对齐现场范围。</span></div>
       </article>
     </div>
